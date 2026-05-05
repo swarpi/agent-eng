@@ -9,6 +9,7 @@ This project separates AI-assisted work into four roles. Each role has a dedicat
 | Role | Prompt | Responsibility |
 |------|--------|----------------|
 | **Architect** | `prompts/architect.md` | Analyze requirements, ask clarifying questions, produce ADRs |
+| **System Architect** | `prompts/system-architect.md` | Map and document system architecture as `architecture.yaml` |
 | **Planner** | `prompts/planner.md` | Decompose specs and ADRs into actionable tickets |
 | **Executor** | _(you, the coding agent)_ | Implement tickets following conventions |
 | **Reviewer** | `prompts/reviewer.md` | Validate code against acceptance criteria and ADRs |
@@ -21,9 +22,11 @@ This project separates AI-assisted work into four roles. Each role has a dedicat
 4. Propose a plan before writing code — get alignment first
 5. If the ticket touches an existing ADR's scope, verify the decision still holds
 
-## Key Directories
+## Key Files and Directories
 
 - `architecture/decisions/` — Architecture Decision Records (ADRs)
+- `architecture.yaml` — System architecture definition (components, connections, tiers)
+- `orchestration.yaml` — Agent workflow definition (roles, outputs, connections)
 - `specs/` — Feature specifications
 - `tickets/` — Work items with acceptance criteria
 - `conventions/` — Language and framework coding standards

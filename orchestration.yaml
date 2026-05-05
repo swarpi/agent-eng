@@ -1,5 +1,5 @@
 name: Agentic Workflow
-description: Four-role pipeline for AI-assisted software engineering
+description: Five-role pipeline for AI-assisted software engineering
 
 agents:
   - id: architect
@@ -12,6 +12,17 @@ agents:
       - Constraints
     color: indigo
     docLink: /prompts/architect.md
+
+  - id: system-architect
+    title: System Architect
+    tagline: Maps the runtime system architecture
+    description: Identifies components, connections, protocols, and tiers. Produces a structured architecture.yaml that documents how the system fits together.
+    outputs:
+      - architecture.yaml
+      - Component map
+      - Connection diagram
+    color: green
+    docLink: /prompts/system-architect.md
 
   - id: planner
     title: Planner
@@ -48,8 +59,12 @@ agents:
 
 connections:
   - from: architect
-    to: planner
+    to: system-architect
     artifact: ADRs · Specs
+
+  - from: system-architect
+    to: planner
+    artifact: architecture.yaml
 
   - from: planner
     to: executor

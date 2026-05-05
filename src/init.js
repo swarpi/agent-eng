@@ -12,9 +12,11 @@ const STRUCTURE = [
   "prompts/architect.md",
   "prompts/planner.md",
   "prompts/reviewer.md",
+  "prompts/system-architect.md",
   "specs/_template.md",
   "tickets/_template.md",
   "orchestration.yaml",
+  "architecture.yaml",
   "CLAUDE.md",
 ];
 

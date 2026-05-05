@@ -1,6 +1,6 @@
 {
   "name": "agent-eng",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Scaffold a structured agentic engineering workflow for AI-assisted development",
   "type": "module",
   "bin": {
