@@ -1,0 +1,24 @@
+{
+  "name": "agent-eng",
+  "version": "0.1.0",
+  "description": "Scaffold a structured agentic engineering workflow for AI-assisted development",
+  "type": "module",
+  "bin": {
+    "agent-eng": "./bin/agent-eng.js"
+  },
+  "files": [
+    "bin",
+    "src"
+  ],
+  "keywords": [
+    "ai",
+    "agents",
+    "workflow",
+    "cli",
+    "scaffold",
+    "adr",
+    "architecture"
+  ],
+  "author": "swarpi",
+  "license": "MIT"
+}

@@ -1,0 +1,67 @@
+name: Agentic Workflow
+description: Four-role pipeline for AI-assisted software engineering
+
+agents:
+  - id: architect
+    title: Architect
+    tagline: Shapes the system before anything is built
+    description: Asks clarifying questions and explores alternatives before any code is written. Produces Architecture Decision Records (ADRs) and detailed specs.
+    outputs:
+      - ADRs
+      - Specs
+      - Constraints
+    color: indigo
+    docLink: /prompts/architect.md
+
+  - id: planner
+    title: Planner
+    tagline: Decomposes specs into actionable work
+    description: Takes ADRs and specs as input. Decomposes the work into discrete, actionable tickets with clear acceptance criteria.
+    outputs:
+      - Tickets
+      - Milestones
+      - Criteria
+    color: indigo
+    docLink: /prompts/planner.md
+
+  - id: executor
+    title: Executor
+    tagline: Implements with intent and discipline
+    description: Implements tickets following established conventions. Always proposes a plan before touching the codebase.
+    outputs:
+      - Code
+      - PRs
+      - Plan docs
+    color: indigo
+    docLink: /conventions/typescript.md
+
+  - id: reviewer
+    title: Reviewer
+    tagline: Validates against acceptance criteria
+    description: Validates code against the original acceptance criteria. Flags issues back to the Executor and provides final approval.
+    outputs:
+      - Feedback
+      - Approval
+      - Notes
+    color: amber
+    docLink: /prompts/reviewer.md
+
+connections:
+  - from: architect
+    to: planner
+    artifact: ADRs · Specs
+
+  - from: planner
+    to: executor
+    artifact: Tickets
+
+  - from: executor
+    to: reviewer
+    artifact: Code
+
+  - from: reviewer
+    to: executor
+    artifact: Feedback
+    type: feedback
+
+layout: diamond
