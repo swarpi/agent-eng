@@ -4,7 +4,7 @@ This project uses a structured agentic engineering workflow. Before starting any
 
 ## Workflow
 
-This project separates AI-assisted work into four roles. Each role has a dedicated system prompt in `prompts/`.
+This project separates AI-assisted work into six roles. Each role has a dedicated system prompt in `prompts/`.
 
 | Role | Prompt | Responsibility |
 |------|--------|----------------|
@@ -12,7 +12,8 @@ This project separates AI-assisted work into four roles. Each role has a dedicat
 | **System Architect** | `prompts/system-architect.md` | Map and document system architecture as `architecture.yaml` |
 | **Planner** | `prompts/planner.md` | Decompose specs and ADRs into actionable tickets |
 | **Executor** | _(you, the coding agent)_ | Implement tickets following conventions |
-| **Reviewer** | `prompts/reviewer.md` | Validate code against acceptance criteria and ADRs |
+| **QA Tester** | `prompts/qa-tester.md` | Write automated tests for completed features |
+| **Reviewer** | `prompts/reviewer.md` | Validate code and tests against acceptance criteria and ADRs |
 
 ## Before Starting Any Ticket
 

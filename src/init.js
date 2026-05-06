@@ -11,6 +11,7 @@ const STRUCTURE = [
   "architecture/decisions/0001-how-we-work.md",
   "prompts/architect.md",
   "prompts/planner.md",
+  "prompts/qa-tester.md",
   "prompts/reviewer.md",
   "prompts/system-architect.md",
   "specs/_template.md",

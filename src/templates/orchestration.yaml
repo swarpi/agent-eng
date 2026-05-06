@@ -1,8 +1,9 @@
 name: Agentic Workflow
-description: Five-role pipeline for AI-assisted software engineering
+description: Six-role pipeline for AI-assisted software engineering
 
 agents:
   - id: architect
+    kind: decision
     title: Architect
     tagline: Shapes the system before anything is built
     description: Asks clarifying questions and explores alternatives before any code is written. Produces Architecture Decision Records (ADRs) and detailed specs.
@@ -14,6 +15,7 @@ agents:
     docLink: /prompts/architect.md
 
   - id: system-architect
+    kind: decision
     title: System Architect
     tagline: Maps the runtime system architecture
     description: Identifies components, connections, protocols, and tiers. Produces a structured architecture.yaml that documents how the system fits together.
@@ -25,6 +27,7 @@ agents:
     docLink: /prompts/system-architect.md
 
   - id: planner
+    kind: planning
     title: Planner
     tagline: Decomposes specs into actionable work
     description: Takes ADRs and specs as input. Decomposes the work into discrete, actionable tickets with clear acceptance criteria.
@@ -36,6 +39,7 @@ agents:
     docLink: /prompts/planner.md
 
   - id: executor
+    kind: execution
     title: Executor
     tagline: Implements with intent and discipline
     description: Implements tickets following established conventions. Always proposes a plan before touching the codebase.
@@ -46,10 +50,23 @@ agents:
     color: indigo
     docLink: /conventions/typescript.md
 
+  - id: qa-tester
+    kind: validation
+    title: QA Tester
+    tagline: Writes automated tests for completed features
+    description: Writes automated tests after the Executor finishes a feature. Covers acceptance criteria, edge cases, and regression scenarios.
+    outputs:
+      - Tests
+      - Coverage report
+      - Test plan
+    color: green
+    docLink: /prompts/qa-tester.md
+
   - id: reviewer
+    kind: validation
     title: Reviewer
     tagline: Validates against acceptance criteria
-    description: Validates code against the original acceptance criteria. Flags issues back to the Executor and provides final approval.
+    description: Validates code and tests against the original acceptance criteria. Flags issues back to the Executor and provides final approval.
     outputs:
       - Feedback
       - Approval
@@ -71,8 +88,12 @@ connections:
     artifact: Tickets
 
   - from: executor
-    to: reviewer
+    to: qa-tester
     artifact: Code
+
+  - from: qa-tester
+    to: reviewer
+    artifact: Code · Tests
 
   - from: reviewer
     to: executor

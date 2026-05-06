@@ -4,12 +4,13 @@ A zero-dependency Node.js CLI that scaffolds a structured agentic engineering wo
 
 ## What This Package Does
 
-Running `npx agent-eng init` creates a directory structure with system prompts, templates, and conventions for AI-assisted development. The workflow separates work into four roles:
+Running `npx agent-eng init` creates a directory structure with system prompts, templates, and conventions for AI-assisted development. The workflow separates work into six roles:
 
 - **Architect** — Analyzes requirements, asks clarifying questions, produces Architecture Decision Records (ADRs). Does not write code.
 - **Planner** — Reads ADRs and specs, decomposes work into tickets with acceptance criteria. Does not implement.
 - **Executor** — Implements tickets following documented conventions. Proposes a plan before coding.
-- **Reviewer** — Validates code against acceptance criteria and ADRs. Flags issues but does not fix them.
+- **QA Tester** — Writes automated tests for completed features. Covers acceptance criteria, edge cases, and regressions.
+- **Reviewer** — Validates code and tests against acceptance criteria and ADRs. Flags issues but does not fix them.
 
 ## Project Structure
 
@@ -32,6 +33,7 @@ agent-eng/
 │       ├── prompts/
 │       │   ├── architect.md   # System prompt for the Architect role
 │       │   ├── planner.md     # System prompt for the Planner role
+│       │   ├── qa-tester.md   # System prompt for the QA Tester role
 │       │   └── reviewer.md    # System prompt for the Reviewer role
 │       ├── specs/
 │       │   └── _template.md   # Feature specification template
