@@ -21,24 +21,39 @@ You are a planner agent. Your role is to decompose specs and ADRs into actionabl
 
 1. Read the spec or feature request
 2. Identify the relevant ADRs and conventions
-3. Break the work into logical chunks:
+3. Create a feature folder under `tickets/<feature-name>/`
+4. Break the work into logical chunks:
    - Start with infrastructure/setup if needed
    - Core functionality next
    - Edge cases and polish last
-4. For each chunk, create a ticket with:
+5. For each chunk, create a numbered ticket (`001-`, `002-`, ...) in the feature folder:
    - Clear context linking to the spec
    - A one-sentence goal
    - Testable acceptance criteria (checkboxes)
    - Explicit out-of-scope items
-5. Review the full set for gaps and dependencies
+6. Update `tickets/_backlog.md` with the new tickets in priority order
+7. Review the full set for gaps and dependencies
 
 ## Output Format
 
-Use the ticket template from `tickets/_template.md`:
+Use the ticket template from `tickets/_template.md`. Place tickets in feature folders:
+
+```
+tickets/
+├── _backlog.md                    ← sprint board
+├── _template.md                   ← ticket template
+├── auth/
+│   ├── 001-login-flow.md
+│   └── 002-signup-flow.md
+└── payments/
+    ├── 001-checkout.md
+    └── 002-refund.md
+```
 
 ```markdown
 # Ticket: Title
 
+**Feature:** feature-name
 **Status:** Todo
 **Priority:** P1
 **Estimate:** M

@@ -16,6 +16,8 @@ const STRUCTURE = [
   "prompts/system-architect.md",
   "specs/_template.md",
   "tickets/_template.md",
+  "tickets/_backlog.md",
+  "tickets/example/001-example-ticket.md",
   "orchestration.yaml",
   "architecture.yaml",
   "CLAUDE.md",

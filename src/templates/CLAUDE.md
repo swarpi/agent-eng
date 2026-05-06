@@ -29,7 +29,7 @@ This project separates AI-assisted work into six roles. Each role has a dedicate
 - `architecture.yaml` — System architecture definition (components, connections, tiers)
 - `orchestration.yaml` — Agent workflow definition (roles, outputs, connections)
 - `specs/` — Feature specifications
-- `tickets/` — Work items with acceptance criteria
+- `tickets/` — Work items organized by feature folder, with `_backlog.md` as the sprint board
 - `conventions/` — Language and framework coding standards
 - `prompts/` — System prompts for each agent role
 
