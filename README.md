@@ -8,7 +8,7 @@ Scaffold a structured agentic engineering workflow into any project. Run one com
 npx agent-eng init
 ```
 
-This creates the following structure in your project:
+This creates the following structure in your project: 
 
 ```
 ├── CLAUDE.md                              # Project instructions for AI agents
