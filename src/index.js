@@ -18,7 +18,7 @@ Examples:
   agent-eng init --dir ./my-project --conventions java
 `;
 
-export function run(args) {
+export async function run(args) {
   const command = args[0];
 
   if (!command || command === "-h" || command === "--help") {
@@ -28,7 +28,7 @@ export function run(args) {
 
   if (command === "init") {
     const options = parseInitArgs(args.slice(1));
-    init(options);
+    await init(options);
     return;
   }
 

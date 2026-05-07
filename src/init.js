@@ -1,4 +1,5 @@
-import { cpSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { appendFileSync, cpSync, existsSync, mkdirSync, readFileSync } from "node:fs";
+import { createInterface } from "node:readline";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -24,10 +25,19 @@ const STRUCTURE = [
   "tickets/example/001-example-ticket.md",
   "orchestration.yaml",
   "architecture.yaml",
-  "CLAUDE.md",
 ];
 
-export function init(options) {
+function prompt(question) {
+  const rl = createInterface({ input: process.stdin, output: process.stdout });
+  return new Promise((resolve) => {
+    rl.question(question, (answer) => {
+      rl.close();
+      resolve(answer.trim().toLowerCase());
+    });
+  });
+}
+
+export async function init(options) {
   const target = resolve(options.dir);
   const created = [];
   const skipped = [];
@@ -44,6 +54,34 @@ export function init(options) {
     mkdirSync(dirname(dest), { recursive: true });
     cpSync(src, dest);
     created.push(file);
+  }
+
+  // Handle CLAUDE.md separately — prompt user if it already exists
+  const claudeDest = join(target, "CLAUDE.md");
+  const claudeSrc = join(TEMPLATES, "CLAUDE.md");
+
+  if (!existsSync(claudeDest) || options.force) {
+    mkdirSync(dirname(claudeDest), { recursive: true });
+    cpSync(claudeSrc, claudeDest);
+    created.push("CLAUDE.md");
+  } else {
+    console.log("");
+    console.log("CLAUDE.md already exists.");
+    console.log("  1) Skip — keep existing file");
+    console.log("  2) Append — add agent-eng content to the end");
+    console.log("  3) Replace — overwrite with agent-eng template");
+    const answer = await prompt("Choose [1/2/3] (default: 1): ");
+
+    if (answer === "2" || answer === "append") {
+      const content = readFileSync(claudeSrc, "utf8");
+      appendFileSync(claudeDest, "\n\n" + content);
+      created.push("CLAUDE.md (appended)");
+    } else if (answer === "3" || answer === "replace") {
+      cpSync(claudeSrc, claudeDest);
+      created.push("CLAUDE.md (replaced)");
+    } else {
+      skipped.push("CLAUDE.md");
+    }
   }
 
   for (const convention of options.conventions) {
