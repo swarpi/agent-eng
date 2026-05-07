@@ -1,5 +1,5 @@
 name: Agentic Workflow
-description: Seven-role pipeline for AI-assisted software engineering
+description: Eight-role pipeline for AI-assisted software engineering
 
 agents:
   - id: architect
@@ -85,6 +85,18 @@ agents:
     color: blue
     docLink: /.claude/agents/custodian.md
 
+  - id: summarizer
+    kind: reporting
+    title: Summarizer
+    tagline: Communicates completed work to stakeholders
+    description: Reads tickets, ADRs, specs, git history, and test results to produce concise, non-technical executive summaries of what was delivered and why it matters.
+    outputs:
+      - Executive summaries
+      - Sprint recaps
+      - Stakeholder reports
+    color: teal
+    docLink: /.claude/agents/summarizer.md
+
 connections:
   - from: architect
     to: system-architect
@@ -113,6 +125,11 @@ connections:
 
   - from: reviewer
     to: custodian
+    artifact: Completed work context
+    type: trigger
+
+  - from: reviewer
+    to: summarizer
     artifact: Completed work context
     type: trigger
 

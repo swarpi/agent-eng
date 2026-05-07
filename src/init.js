@@ -15,6 +15,7 @@ const STRUCTURE = [
   ".claude/agents/planner.md",
   ".claude/agents/qa-tester.md",
   ".claude/agents/reviewer.md",
+  ".claude/agents/summarizer.md",
   ".claude/agents/system-architect.md",
   "architecture/overview.md",
   "architecture/decisions/_template.md",

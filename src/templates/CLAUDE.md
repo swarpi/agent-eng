@@ -4,7 +4,7 @@ This project uses a structured agentic engineering workflow. Before starting any
 
 ## Workflow
 
-This project separates AI-assisted work into seven roles. Each role is a Claude Code subagent in `.claude/agents/` — invoke them via the Agent tool with `subagent_type: "<name>"` (e.g., `subagent_type: "architect"`). Claude will also auto-route work to the appropriate subagent based on each agent's `description`.
+This project separates AI-assisted work into eight roles. Each role is a Claude Code subagent in `.claude/agents/` — invoke them via the Agent tool with `subagent_type: "<name>"` (e.g., `subagent_type: "architect"`). Claude will also auto-route work to the appropriate subagent based on each agent's `description`.
 
 | Role | Subagent | Responsibility |
 |------|----------|----------------|
@@ -15,6 +15,7 @@ This project separates AI-assisted work into seven roles. Each role is a Claude 
 | **QA Tester** | `qa-tester` | Write automated tests for completed features |
 | **Reviewer** | `reviewer` | Validate code and tests against acceptance criteria and ADRs |
 | **Custodian** | `custodian` | Keep CLAUDE.md lean (≤200 lines), current, and routed to external files |
+| **Summarizer** | `summarizer` | Generate executive summaries of completed sprints or features for stakeholders |
 
 ## Sub-Agent Deployment
 
