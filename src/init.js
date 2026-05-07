@@ -6,6 +6,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const TEMPLATES = join(__dirname, "templates");
 
 const STRUCTURE = [
+  ".github/workflows/notify-site.yml",
   ".claude/settings.json",
   "architecture/overview.md",
   "architecture/decisions/_template.md",
@@ -84,5 +85,6 @@ export function init(options) {
   console.log("  1. Review CLAUDE.md and customize for your project");
   console.log("  2. Pick the conventions that match your stack");
   console.log("  3. Start with the Architect: create your first ADR");
+  console.log("  4. Add the SITE_REBUILD_TOKEN secret and 'showcase' topic to enable auto site rebuilds");
   console.log("");
 }
