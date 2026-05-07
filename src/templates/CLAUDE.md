@@ -4,17 +4,17 @@ This project uses a structured agentic engineering workflow. Before starting any
 
 ## Workflow
 
-This project separates AI-assisted work into six roles. Each role has a dedicated system prompt in `prompts/`.
+This project separates AI-assisted work into seven roles. Each role is a Claude Code subagent in `.claude/agents/` — invoke them via the Agent tool with `subagent_type: "<name>"` (e.g., `subagent_type: "architect"`). Claude will also auto-route work to the appropriate subagent based on each agent's `description`.
 
-| Role | Prompt | Responsibility |
-|------|--------|----------------|
-| **Architect** | `prompts/architect.md` | Analyze requirements, ask clarifying questions, produce ADRs |
-| **System Architect** | `prompts/system-architect.md` | Map and document system architecture as `architecture.yaml` |
-| **Planner** | `prompts/planner.md` | Decompose specs and ADRs into actionable tickets |
-| **Executor** | `prompts/executor.md` | Implement tickets, verify work before requesting feedback |
-| **QA Tester** | `prompts/qa-tester.md` | Write automated tests for completed features |
-| **Reviewer** | `prompts/reviewer.md` | Validate code and tests against acceptance criteria and ADRs |
-| **Custodian** | `prompts/custodian.md` | Keep CLAUDE.md lean (≤200 lines), current, and routed to external files |
+| Role | Subagent | Responsibility |
+|------|----------|----------------|
+| **Architect** | `architect` | Analyze requirements, ask clarifying questions, produce ADRs |
+| **System Architect** | `system-architect` | Map and document system architecture as `architecture.yaml` |
+| **Planner** | `planner` | Decompose specs and ADRs into actionable tickets |
+| **Executor** | `executor` | Implement tickets, verify work before requesting feedback |
+| **QA Tester** | `qa-tester` | Write automated tests for completed features |
+| **Reviewer** | `reviewer` | Validate code and tests against acceptance criteria and ADRs |
+| **Custodian** | `custodian` | Keep CLAUDE.md lean (≤200 lines), current, and routed to external files |
 
 ## Sub-Agent Deployment
 
@@ -70,7 +70,7 @@ Use the Agent tool with these parameters:
 - `specs/` — Feature specifications
 - `tickets/` — Work items organized by feature folder, with `_backlog.md` as the sprint board
 - `conventions/` — Language and framework coding standards
-- `prompts/` — System prompts for each agent role
+- `.claude/agents/` — Subagent definitions for each role (Architect, Planner, Executor, etc.)
 
 ## MCP Servers
 

@@ -12,7 +12,7 @@ agents:
       - Specs
       - Constraints
     color: indigo
-    docLink: /prompts/architect.md
+    docLink: /.claude/agents/architect.md
 
   - id: system-architect
     kind: decision
@@ -24,7 +24,7 @@ agents:
       - Component map
       - Connection diagram
     color: green
-    docLink: /prompts/system-architect.md
+    docLink: /.claude/agents/system-architect.md
 
   - id: planner
     kind: planning
@@ -36,7 +36,7 @@ agents:
       - Milestones
       - Criteria
     color: indigo
-    docLink: /prompts/planner.md
+    docLink: /.claude/agents/planner.md
 
   - id: executor
     kind: execution
@@ -48,7 +48,7 @@ agents:
       - PRs
       - Plan docs
     color: indigo
-    docLink: /prompts/executor.md
+    docLink: /.claude/agents/executor.md
 
   - id: qa-tester
     kind: validation
@@ -60,7 +60,7 @@ agents:
       - Coverage report
       - Test plan
     color: green
-    docLink: /prompts/qa-tester.md
+    docLink: /.claude/agents/qa-tester.md
 
   - id: reviewer
     kind: validation
@@ -72,7 +72,7 @@ agents:
       - Approval
       - Notes
     color: amber
-    docLink: /prompts/reviewer.md
+    docLink: /.claude/agents/reviewer.md
 
   - id: custodian
     kind: maintenance
@@ -83,7 +83,7 @@ agents:
       - Updated CLAUDE.md
       - Extracted reference files
     color: gray
-    docLink: /prompts/custodian.md
+    docLink: /.claude/agents/custodian.md
 
 connections:
   - from: architect

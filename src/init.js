@@ -8,16 +8,16 @@ const TEMPLATES = join(__dirname, "templates");
 const STRUCTURE = [
   ".github/workflows/notify-site.yml",
   ".claude/settings.json",
+  ".claude/agents/architect.md",
+  ".claude/agents/custodian.md",
+  ".claude/agents/executor.md",
+  ".claude/agents/planner.md",
+  ".claude/agents/qa-tester.md",
+  ".claude/agents/reviewer.md",
+  ".claude/agents/system-architect.md",
   "architecture/overview.md",
   "architecture/decisions/_template.md",
   "architecture/decisions/0001-how-we-work.md",
-  "prompts/architect.md",
-  "prompts/custodian.md",
-  "prompts/executor.md",
-  "prompts/planner.md",
-  "prompts/qa-tester.md",
-  "prompts/reviewer.md",
-  "prompts/system-architect.md",
   "specs/_template.md",
   "tickets/_template.md",
   "tickets/_backlog.md",
@@ -84,7 +84,7 @@ export function init(options) {
   console.log("Next steps:");
   console.log("  1. Review CLAUDE.md and customize for your project");
   console.log("  2. Pick the conventions that match your stack");
-  console.log("  3. Start with the Architect: create your first ADR");
+  console.log("  3. Start with the Architect subagent: ask Claude to use the 'architect' agent to create your first ADR");
   console.log("  4. Add the SITE_REBUILD_TOKEN secret and 'showcase' topic to enable auto site rebuilds");
   console.log("");
 }

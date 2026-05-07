@@ -4,13 +4,15 @@ A zero-dependency Node.js CLI that scaffolds a structured agentic engineering wo
 
 ## What This Package Does
 
-Running `npx agent-eng init` creates a directory structure with system prompts, templates, and conventions for AI-assisted development. The workflow separates work into six roles:
+Running `npx agent-eng init` creates a directory structure with Claude Code subagents, templates, and conventions for AI-assisted development. The workflow separates work into seven roles, each wired as a subagent in `.claude/agents/`:
 
 - **Architect** — Analyzes requirements, asks clarifying questions, produces Architecture Decision Records (ADRs). Does not write code.
+- **System Architect** — Maps the runtime architecture as `architecture.yaml` (components, tiers, connections).
 - **Planner** — Reads ADRs and specs, decomposes work into tickets with acceptance criteria. Does not implement.
 - **Executor** — Implements tickets following documented conventions. Proposes a plan before coding.
 - **QA Tester** — Writes automated tests for completed features. Covers acceptance criteria, edge cases, and regressions.
 - **Reviewer** — Validates code and tests against acceptance criteria and ADRs. Flags issues but does not fix them.
+- **Custodian** — Keeps `CLAUDE.md` lean (≤200 lines), current, and routed to external files.
 
 ## Project Structure
 
@@ -24,7 +26,15 @@ agent-eng/
 │   ├── init.js               # Core scaffolding logic — copies templates to target dir
 │   └── templates/            # All files that get copied on `agent-eng init`
 │       ├── .claude/
-│       │   └── settings.json  # Claude Code project settings (MCP servers)
+│       │   ├── settings.json  # Claude Code project settings (MCP servers)
+│       │   └── agents/        # Auto-wired subagents (frontmatter + system prompt)
+│       │       ├── architect.md
+│       │       ├── system-architect.md
+│       │       ├── planner.md
+│       │       ├── executor.md
+│       │       ├── qa-tester.md
+│       │       ├── reviewer.md
+│       │       └── custodian.md
 │       ├── CLAUDE.md          # Project instructions for AI agents
 │       ├── orchestration.yaml # Machine-readable workflow definition
 │       ├── architecture/
@@ -32,13 +42,6 @@ agent-eng/
 │       │   └── decisions/
 │       │       ├── _template.md         # ADR template
 │       │       └── 0001-how-we-work.md  # Seed ADR explaining the workflow
-│       ├── prompts/
-│       │   ├── architect.md   # System prompt for the Architect role
-│       │   ├── custodian.md   # System prompt for the Custodian role
-│       │   ├── executor.md    # System prompt for the Executor role
-│       │   ├── planner.md     # System prompt for the Planner role
-│       │   ├── qa-tester.md   # System prompt for the QA Tester role
-│       │   └── reviewer.md    # System prompt for the Reviewer role
 │       ├── specs/
 │       │   └── _template.md   # Feature specification template
 │       ├── tickets/
@@ -97,5 +100,4 @@ agent-eng init --force                      # Overwrite existing files
 
 ## Related Repositories
 
-- [swarpi/agentic-workflow](https://github.com/swarpi/agentic-workflow) — The original workflow template this CLI is based on
 - [swarpi/swarpi.github.io](https://github.com/swarpi/swarpi.github.io) — Portfolio site that visualizes the workflow

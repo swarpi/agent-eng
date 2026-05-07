@@ -14,16 +14,21 @@ This creates the following structure in your project:
 ├── CLAUDE.md                              # Project instructions for AI agents
 ├── orchestration.yaml                     # Agent workflow definition (roles, outputs)
 ├── architecture.yaml                      # System architecture definition (components, connections)
+├── .claude/
+│   ├── settings.json                      # Claude Code project settings (MCP servers)
+│   └── agents/                            # Auto-wired Claude Code subagents — invoke via Agent tool
+│       ├── architect.md
+│       ├── system-architect.md
+│       ├── planner.md
+│       ├── executor.md
+│       ├── qa-tester.md
+│       ├── reviewer.md
+│       └── custodian.md
 ├── architecture/
 │   ├── overview.md                        # High-level architecture overview
 │   └── decisions/
 │       ├── _template.md                   # ADR template
 │       └── 0001-how-we-work.md            # Seed ADR: the workflow itself
-├── prompts/
-│   ├── architect.md                       # System prompt for the Architect role
-│   ├── system-architect.md                # System prompt for system architecture mapping
-│   ├── planner.md                         # System prompt for the Planner role
-│   └── reviewer.md                        # System prompt for the Reviewer role
 ├── specs/
 │   └── _template.md                       # Feature specification template
 ├── tickets/
@@ -72,7 +77,7 @@ The scaffolded workflow separates AI-assisted engineering into five roles:
 | **Executor** | Implements tickets following conventions, proposes plan first | Code and PRs |
 | **Reviewer** | Validates code against acceptance criteria and ADRs | Approval or actionable feedback |
 
-Each role has a dedicated system prompt in `prompts/` that you can load into your AI assistant to set the context for that type of work.
+Each role is wired as a Claude Code subagent in `.claude/agents/`. Invoke them via the Agent tool (`subagent_type: "architect"`, etc.), or just describe the task — Claude will route to the right subagent based on each agent's `description` frontmatter.
 
 ## YAML Definitions
 
@@ -88,11 +93,11 @@ Defines the runtime system components, their tiers (client/service/engine/data),
 
 1. **Review `CLAUDE.md`** — Customize the project instructions for your specific project
 2. **Pick your conventions** — Keep the ones that match your stack, remove the rest
-3. **Start with the Architect** — Load `prompts/architect.md` and create your first ADR
-4. **Map the system** — Load `prompts/system-architect.md` and create your `architecture.yaml`
-5. **Plan the work** — Load `prompts/planner.md` and decompose your ADR into tickets
-6. **Execute** — Pick up a ticket and implement it following your conventions
-7. **Review** — Load `prompts/reviewer.md` to validate the work
+3. **Start with the Architect** — Ask Claude to use the `architect` subagent to create your first ADR
+4. **Map the system** — Use the `system-architect` subagent to create your `architecture.yaml`
+5. **Plan the work** — Use the `planner` subagent to decompose your ADR into tickets
+6. **Execute** — Use the `executor` subagent to implement a ticket following your conventions
+7. **Test & Review** — Use the `qa-tester` and `reviewer` subagents to validate the work
 
 ## License
 
