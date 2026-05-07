@@ -6,10 +6,13 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const TEMPLATES = join(__dirname, "templates");
 
 const STRUCTURE = [
+  ".claude/settings.json",
   "architecture/overview.md",
   "architecture/decisions/_template.md",
   "architecture/decisions/0001-how-we-work.md",
   "prompts/architect.md",
+  "prompts/custodian.md",
+  "prompts/executor.md",
   "prompts/planner.md",
   "prompts/qa-tester.md",
   "prompts/reviewer.md",

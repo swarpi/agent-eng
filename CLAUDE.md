@@ -23,6 +23,8 @@ agent-eng/
 │   ├── index.js              # Arg parsing, help text, routes to commands
 │   ├── init.js               # Core scaffolding logic — copies templates to target dir
 │   └── templates/            # All files that get copied on `agent-eng init`
+│       ├── .claude/
+│       │   └── settings.json  # Claude Code project settings (MCP servers)
 │       ├── CLAUDE.md          # Project instructions for AI agents
 │       ├── orchestration.yaml # Machine-readable workflow definition
 │       ├── architecture/
@@ -32,6 +34,8 @@ agent-eng/
 │       │       └── 0001-how-we-work.md  # Seed ADR explaining the workflow
 │       ├── prompts/
 │       │   ├── architect.md   # System prompt for the Architect role
+│       │   ├── custodian.md   # System prompt for the Custodian role
+│       │   ├── executor.md    # System prompt for the Executor role
 │       │   ├── planner.md     # System prompt for the Planner role
 │       │   ├── qa-tester.md   # System prompt for the QA Tester role
 │       │   └── reviewer.md    # System prompt for the Reviewer role

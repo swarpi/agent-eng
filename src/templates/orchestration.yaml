@@ -1,5 +1,5 @@
 name: Agentic Workflow
-description: Six-role pipeline for AI-assisted software engineering
+description: Seven-role pipeline for AI-assisted software engineering
 
 agents:
   - id: architect
@@ -48,7 +48,7 @@ agents:
       - PRs
       - Plan docs
     color: indigo
-    docLink: /conventions/typescript.md
+    docLink: /prompts/executor.md
 
   - id: qa-tester
     kind: validation
@@ -73,6 +73,17 @@ agents:
       - Notes
     color: amber
     docLink: /prompts/reviewer.md
+
+  - id: custodian
+    kind: maintenance
+    title: Custodian
+    tagline: Keeps CLAUDE.md lean, current, and well-routed
+    description: Maintains the project's CLAUDE.md file — adds new patterns and gotchas, removes stale entries, and routes large content to external files. Enforces a 150–200 line limit to prevent context bloat.
+    outputs:
+      - Updated CLAUDE.md
+      - Extracted reference files
+    color: gray
+    docLink: /prompts/custodian.md
 
 connections:
   - from: architect
@@ -99,5 +110,25 @@ connections:
     to: executor
     artifact: Feedback
     type: feedback
+
+  - from: reviewer
+    to: custodian
+    artifact: Completed work context
+    type: trigger
+
+parallelization:
+  description: >
+    The main session can deploy sub-agents for independent, parallelizable work.
+    Sub-agents run in isolation, report back, and the main thread synthesizes results.
+  model-routing:
+    low-complexity: haiku
+    medium-complexity: sonnet
+    high-complexity: opus
+  default-model: haiku
+  examples:
+    - parallel research across multiple files
+    - running independent test suites simultaneously
+    - implementing tickets with no dependencies on each other
+    - concurrent verification (browser + console + tests)
 
 layout: diamond
