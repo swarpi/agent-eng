@@ -1,5 +1,5 @@
 name: Agentic Workflow
-description: Six-role pipeline for AI-assisted software engineering
+description: Seven-role pipeline for AI-assisted software engineering
 
 agents:
   - id: architect
@@ -74,6 +74,18 @@ agents:
     color: amber
     docLink: /prompts/reviewer.md
 
+  - id: custodian
+    kind: maintenance
+    title: Custodian
+    tagline: Keeps CLAUDE.md lean and current
+    description: Maintains the project's CLAUDE.md file — keeping it accurate, under 200 lines, and well-routed to external files. Runs after batches of work or when documentation drifts.
+    outputs:
+      - Updated CLAUDE.md
+      - Extracted docs
+      - Route links
+    color: blue
+    docLink: /prompts/custodian.md
+
 connections:
   - from: architect
     to: system-architect
@@ -100,4 +112,9 @@ connections:
     artifact: Feedback
     type: feedback
 
-layout: diamond
+  - from: reviewer
+    to: custodian
+    artifact: Completed work
+    type: main
+
+layout: pipeline

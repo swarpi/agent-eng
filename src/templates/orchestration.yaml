@@ -82,7 +82,7 @@ agents:
     outputs:
       - Updated CLAUDE.md
       - Extracted reference files
-    color: gray
+    color: blue
     docLink: /.claude/agents/custodian.md
 
 connections:
