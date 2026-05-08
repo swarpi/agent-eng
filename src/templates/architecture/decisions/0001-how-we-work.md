@@ -2,6 +2,7 @@
 
 **Status:** Accepted  
 **Date:** 2026-05-04  
+**Updated:** 2026-05-08  
 **Author:** swarpi
 
 ## Context
@@ -12,19 +13,40 @@ Working with AI coding assistants can be highly productive, but without structur
 - Lost context between sessions
 - No clear separation between planning and execution
 
-We need a workflow that maximizes the benefits of AI assistance while maintaining engineering rigor.
+We need a workflow that maximizes the benefits of AI assistance while maintaining engineering rigor. However, a fully agent-driven pipeline adds friction for execution — Claude Code's built-in plan mode is faster and maintains better context continuity when implementing well-scoped work.
 
 ## Decision
 
-We adopt a role-based workflow with four distinct agent modes:
+We adopt a **hybrid approach**: specialized agents own the process, Claude Code plan mode owns execution.
+
+### Agents (process)
 
 1. **Architect** — Focuses on design decisions. Produces ADRs. Asks clarifying questions before deciding. Has read access to the codebase but does not write code.
 
-2. **Planner** — Takes specs and ADRs as input. Decomposes work into tickets with clear acceptance criteria. Does not implement.
+2. **Planner** — Takes specs and ADRs as input. Decomposes work into tickets scoped for plan mode sessions. Does not implement.
 
-3. **Executor** — Implements tickets. Follows conventions. References the ticket and relevant ADRs. Proposes a plan before coding.
+3. **QA Tester** — Writes automated tests after implementation. Covers acceptance criteria, edge cases, and regressions.
 
-4. **Reviewer** — Reviews diffs against acceptance criteria and linked ADRs. Checks for convention violations. Does not fix issues directly — flags them for the executor.
+4. **Reviewer** — Reviews diffs against acceptance criteria and linked ADRs. Checks for convention violations. Does not fix issues directly — flags them for fixing.
+
+5. **Custodian** — Keeps CLAUDE.md lean and current. Routes large content to external files.
+
+6. **Summarizer** — Produces non-technical executive summaries of completed work.
+
+### Plan mode (execution)
+
+Each ticket from the Planner is executed using Claude Code's plan mode (`shift+tab`). Plan mode:
+- Explores the codebase and proposes a plan before implementing
+- Executes within a single session with full context continuity
+- Adapts its depth to the task — simple ticket, simple plan
+
+The **Executor agent** remains as a fallback for cases where plan mode is unavailable or strict verification discipline is needed.
+
+### When to skip the pipeline
+
+- Bug fixes, typos, and small changes → plan mode directly
+- Well-understood changes with no architectural implications → plan mode directly
+- New features or significant decisions → full pipeline starting with Architect
 
 All significant decisions are recorded as ADRs. All work items are tickets with acceptance criteria. Conventions are documented per-language.
 
@@ -35,14 +57,15 @@ All significant decisions are recorded as ADRs. All work items are tickets with 
 - Clear separation of concerns reduces cognitive overload per session
 - ADRs create a searchable decision history
 - Tickets with acceptance criteria make "done" unambiguous
+- Plan mode provides fast, context-aware execution without agent switching overhead
 - Conventions prevent style drift across sessions
-- Role separation allows using different models for different tasks (e.g., larger model for architecture, faster model for execution)
+- The workflow adapts to task size — no ceremony for small changes
 
 ### Negative
 
-- More upfront documentation work
-- Overhead may feel excessive for small changes
-- Requires discipline to follow the process
+- More upfront documentation work for new features
+- Requires discipline to follow the process for larger changes
+- Plan mode doesn't produce persistent artifacts the way the Executor agent does
 
 ### Neutral
 
@@ -54,10 +77,14 @@ All significant decisions are recorded as ADRs. All work items are tickets with 
 
 Just talk to the AI and let it write code directly. Rejected because it leads to inconsistent decisions and lost context.
 
+### Fully agent-driven pipeline (previous approach)
+
+All eight agents in sequence, including Executor for implementation. Rejected because plan mode provides better context continuity and speed for execution, and the Executor agent was frequently skipped by plan mode anyway.
+
+### Plan mode only (no agents)
+
+Use plan mode for everything. Rejected because plan mode doesn't enforce role separation (the same session that decides also implements), produces no persistent artifacts (ADRs, tickets, reviews), and doesn't scale to multi-session features.
+
 ### Heavy-process frameworks (e.g., full Agile ceremony)
 
 Too heavyweight for a solo developer. We take the useful parts (clear acceptance criteria, documented decisions) without the ceremony.
-
-### Separate human architect with AI executor
-
-Keeps all design decisions with the human. Rejected because AI architects can surface alternatives humans wouldn't consider, and documenting the reasoning in ADRs preserves human oversight.

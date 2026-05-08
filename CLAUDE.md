@@ -4,15 +4,20 @@ A zero-dependency Node.js CLI that scaffolds a structured agentic engineering wo
 
 ## What This Package Does
 
-Running `npx agent-eng init` creates a directory structure with Claude Code subagents, templates, and conventions for AI-assisted development. The workflow separates work into seven roles, each wired as a subagent in `.claude/agents/`:
+Running `npx agent-eng init` creates a directory structure with Claude Code subagents, templates, and conventions for AI-assisted development. The workflow uses a **hybrid approach**: specialized agents own the process (decisions, planning, review), and Claude Code's built-in plan mode owns execution.
 
+**Process agents** (in `.claude/agents/`):
 - **Architect** — Analyzes requirements, asks clarifying questions, produces Architecture Decision Records (ADRs). Does not write code.
 - **System Architect** — Maps the runtime architecture as `architecture.yaml` (components, tiers, connections).
-- **Planner** — Reads ADRs and specs, decomposes work into tickets with acceptance criteria. Does not implement.
-- **Executor** — Implements tickets following documented conventions. Proposes a plan before coding.
+- **Planner** — Reads ADRs and specs, decomposes work into tickets scoped for plan mode sessions. Does not implement.
 - **QA Tester** — Writes automated tests for completed features. Covers acceptance criteria, edge cases, and regressions.
 - **Reviewer** — Validates code and tests against acceptance criteria and ADRs. Flags issues but does not fix them.
 - **Custodian** — Keeps `CLAUDE.md` lean (≤200 lines), current, and routed to external files.
+- **Summarizer** — Generates executive summaries of completed sprints or features for stakeholders.
+
+**Execution** (built-in):
+- **Plan mode** (`shift+tab`) — Claude Code's native plan-then-execute cycle. Each ticket from the Planner is implemented as a separate plan mode session.
+- **Executor agent** — Fallback for when plan mode is unavailable or strict verification is needed.
 
 ## Project Structure
 
