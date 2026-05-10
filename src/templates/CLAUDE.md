@@ -11,10 +11,8 @@ Agents own the **process** — architecture decisions, work decomposition, quali
 | **Decide** | `/architect` agent | New feature, significant design choice, unclear requirements |
 | **Map** | `/system-architect` agent | New system or major structural change |
 | **Decompose** | `/planner` agent | ADR/spec ready, work needs to be broken into tickets |
-| **Execute** | Claude Code **plan mode** (`shift+tab`) | Implementing a specific ticket |
-| **Test** | `/qa-tester` agent | Feature implementation complete |
+| **Execute** | Claude Code **plan mode** (`shift+tab`) | Implementing a specific ticket (includes writing tests) |
 | **Review** | `/reviewer` agent | Code and tests ready for validation |
-| **Maintain** | `/custodian` agent | After a batch of work, or CLAUDE.md > 200 lines |
 | **Report** | `/summarizer` agent | Sprint or feature complete, stakeholder update needed |
 
 ### Why hybrid?
@@ -38,6 +36,15 @@ Agents own the **process** — architecture decisions, work decomposition, quali
 3. For each ticket: use plan mode (`shift+tab`) to implement it
 4. After implementation: run `/reviewer` to validate against acceptance criteria
 5. If the ticket touches an existing ADR's scope, verify the decision still holds
+
+## Testing in Plan Mode
+
+Plan mode writes tests as part of implementing each ticket. For every acceptance criterion:
+1. Write at least one automated test that verifies it
+2. Cover edge cases (empty, null, boundary values) and error handling
+3. Run the tests and confirm they pass before marking the ticket done
+
+Follow the project's existing test framework and patterns. Test observable behavior, not implementation details.
 
 ## Before Starting Any Ticket (in plan mode)
 
@@ -70,6 +77,28 @@ When work can be parallelized, spin up sub-agents for independent tasks concurre
 - `tickets/` — Work items organized by feature folder, with `_backlog.md` as the sprint board
 - `conventions/` — Language and framework coding standards
 - `.claude/agents/` — Subagent definitions for each role
+- `STATUS.md` — Live project dashboard (auto-updated git data + manually maintained context)
+
+## CLAUDE.md Maintenance
+
+Keep this file lean and current (target: under 200 lines). A hook warns when it exceeds the limit.
+- When you discover a new gotcha or pattern, add it here or to the appropriate linked file
+- Route large or specialized content to separate files (e.g., `conventions/`, `docs/`) and link from here
+- Remove stale entries that no longer reflect how the project works
+- Never duplicate information that already lives in a linked file
+
+## STATUS.md Maintenance
+
+STATUS.md is a live project dashboard. Git sections (branch, commits, file changes) auto-update via a hook on every commit/push. You maintain the semantic sections:
+
+**Update after significant milestones** (completing a ticket, finishing a phase, hitting a blocker):
+1. **Current Phase** — Mark the active workflow phase(s) from the table
+2. **Active Work** — One paragraph: what feature/ticket is in progress, next step
+3. **Open Tickets** — Snapshot from `tickets/_backlog.md`
+4. **Risks & Blockers** — Add blockers; remove resolved ones
+5. **Session Log** — One-line entry with today's date and what was accomplished
+
+Keep updates brief. STATUS.md is a dashboard, not a report — use `/summarizer` for detailed retrospectives.
 
 ## MCP Servers
 

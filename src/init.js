@@ -9,11 +9,10 @@ const TEMPLATES = join(__dirname, "templates");
 const STRUCTURE = [
   ".github/workflows/notify-site.yml",
   ".claude/settings.json",
+  ".claude/scripts/update-status.sh",
   ".claude/agents/architect.md",
-  ".claude/agents/custodian.md",
   ".claude/agents/executor.md",
   ".claude/agents/planner.md",
-  ".claude/agents/qa-tester.md",
   ".claude/agents/reviewer.md",
   ".claude/agents/summarizer.md",
   ".claude/agents/system-architect.md",
@@ -26,6 +25,7 @@ const STRUCTURE = [
   "tickets/example/001-example-ticket.md",
   "orchestration.yaml",
   "architecture.yaml",
+  "STATUS.md",
 ];
 
 function prompt(question) {

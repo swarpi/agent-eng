@@ -17,7 +17,7 @@ Requirement → Architect → ADR/Spec → Planner → Tickets → Plan Mode →
                 (agent)                (agent)            (built-in)        (agent)
 ```
 
-**Process phases** (agents): Architect, System Architect, Planner, Reviewer, QA Tester, Custodian, Summarizer
+**Process phases** (agents): Architect, System Architect, Planner, Reviewer, Summarizer
 **Execution phase** (plan mode): Claude Code's built-in plan mode implements each ticket in a focused session
 
 ## When to Skip the Pipeline

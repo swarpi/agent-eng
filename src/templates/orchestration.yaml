@@ -1,6 +1,6 @@
 name: Hybrid Agentic Workflow
 description: >
-  Agents own the process (decisions, planning, review, maintenance).
+  Agents own the process (decisions, planning, review).
   Claude Code plan mode owns execution (implementing tickets).
 
 agents:
@@ -68,18 +68,6 @@ agents:
     color: gray
     docLink: /.claude/agents/executor.md
 
-  - id: qa-tester
-    kind: validation
-    title: QA Tester
-    tagline: Writes automated tests for completed features
-    description: Writes automated tests after implementation. Covers acceptance criteria, edge cases, and regression scenarios.
-    outputs:
-      - Tests
-      - Coverage report
-      - Test plan
-    color: green
-    docLink: /.claude/agents/qa-tester.md
-
   - id: reviewer
     kind: validation
     title: Reviewer
@@ -91,17 +79,6 @@ agents:
       - Notes
     color: amber
     docLink: /.claude/agents/reviewer.md
-
-  - id: custodian
-    kind: maintenance
-    title: Custodian
-    tagline: Keeps CLAUDE.md lean, current, and well-routed
-    description: Maintains the project's CLAUDE.md file — adds new patterns and gotchas, removes stale entries, and routes large content to external files. Enforces a 150–200 line limit.
-    outputs:
-      - Updated CLAUDE.md
-      - Extracted reference files
-    color: blue
-    docLink: /.claude/agents/custodian.md
 
   - id: summarizer
     kind: reporting
@@ -140,17 +117,13 @@ connections:
 
   # Validation phase
   - from: plan-mode
-    to: qa-tester
-    artifact: Code
-
-  - from: executor
-    to: qa-tester
-    artifact: Code
-    type: fallback
-
-  - from: qa-tester
     to: reviewer
     artifact: Code · Tests
+
+  - from: executor
+    to: reviewer
+    artifact: Code · Tests
+    type: fallback
 
   # Feedback loops
   - from: reviewer
@@ -164,12 +137,7 @@ connections:
     artifact: Feedback
     type: feedback
 
-  # Maintenance triggers
-  - from: reviewer
-    to: custodian
-    artifact: Completed work context
-    type: trigger
-
+  # Reporting trigger
   - from: reviewer
     to: summarizer
     artifact: Completed work context

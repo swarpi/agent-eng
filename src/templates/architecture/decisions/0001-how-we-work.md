@@ -25,13 +25,9 @@ We adopt a **hybrid approach**: specialized agents own the process, Claude Code 
 
 2. **Planner** — Takes specs and ADRs as input. Decomposes work into tickets scoped for plan mode sessions. Does not implement.
 
-3. **QA Tester** — Writes automated tests after implementation. Covers acceptance criteria, edge cases, and regressions.
+3. **Reviewer** — Reviews diffs against acceptance criteria and linked ADRs. Checks for convention violations and test adequacy. Does not fix issues directly — flags them for fixing.
 
-4. **Reviewer** — Reviews diffs against acceptance criteria and linked ADRs. Checks for convention violations. Does not fix issues directly — flags them for fixing.
-
-5. **Custodian** — Keeps CLAUDE.md lean and current. Routes large content to external files.
-
-6. **Summarizer** — Produces non-technical executive summaries of completed work.
+4. **Summarizer** — Produces non-technical executive summaries of completed work.
 
 ### Plan mode (execution)
 

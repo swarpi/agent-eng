@@ -21,9 +21,8 @@ This creates the following structure in your project:
 │       ├── system-architect.md
 │       ├── planner.md
 │       ├── executor.md
-│       ├── qa-tester.md
 │       ├── reviewer.md
-│       └── custodian.md
+│       └── summarizer.md
 ├── architecture/
 │   ├── overview.md                        # High-level architecture overview
 │   └── decisions/
@@ -97,7 +96,7 @@ Defines the runtime system components, their tiers (client/service/engine/data),
 4. **Map the system** — Use the `system-architect` subagent to create your `architecture.yaml`
 5. **Plan the work** — Use the `planner` subagent to decompose your ADR into tickets
 6. **Execute** — Use the `executor` subagent to implement a ticket following your conventions
-7. **Test & Review** — Use the `qa-tester` and `reviewer` subagents to validate the work
+7. **Review** — Use the `reviewer` subagent to validate the work (tests are written during execution)
 
 ## License
 

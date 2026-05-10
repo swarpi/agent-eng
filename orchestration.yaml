@@ -1,5 +1,5 @@
 name: Agentic Workflow
-description: Seven-role pipeline for AI-assisted software engineering
+description: Five-role pipeline for AI-assisted software engineering
 
 agents:
   - id: architect
@@ -50,18 +50,6 @@ agents:
     color: indigo
     docLink: /src/templates/.claude/agents/executor.md
 
-  - id: qa-tester
-    kind: validation
-    title: QA Tester
-    tagline: Writes automated tests for completed features
-    description: Writes automated tests after the Executor finishes a feature. Covers acceptance criteria, edge cases, and regression scenarios.
-    outputs:
-      - Tests
-      - Coverage report
-      - Test plan
-    color: green
-    docLink: /src/templates/.claude/agents/qa-tester.md
-
   - id: reviewer
     kind: validation
     title: Reviewer
@@ -73,18 +61,6 @@ agents:
       - Notes
     color: amber
     docLink: /src/templates/.claude/agents/reviewer.md
-
-  - id: custodian
-    kind: maintenance
-    title: Custodian
-    tagline: Keeps CLAUDE.md lean and current
-    description: Maintains the project's CLAUDE.md file — keeping it accurate, under 200 lines, and well-routed to external files. Runs after batches of work or when documentation drifts.
-    outputs:
-      - Updated CLAUDE.md
-      - Extracted docs
-      - Route links
-    color: blue
-    docLink: /src/templates/.claude/agents/custodian.md
 
 connections:
   - from: architect
@@ -100,10 +76,6 @@ connections:
     artifact: Tickets
 
   - from: executor
-    to: qa-tester
-    artifact: Code
-
-  - from: qa-tester
     to: reviewer
     artifact: Code · Tests
 
@@ -111,10 +83,5 @@ connections:
     to: executor
     artifact: Feedback
     type: feedback
-
-  - from: reviewer
-    to: custodian
-    artifact: Completed work
-    type: main
 
 layout: pipeline
