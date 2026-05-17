@@ -7,7 +7,6 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const TEMPLATES = join(__dirname, "templates");
 
 const STRUCTURE = [
-  ".github/workflows/notify-site.yml",
   ".claude/settings.json",
   ".claude/scripts/update-status.sh",
   ".claude/agents/architect.md",
@@ -38,66 +37,118 @@ function prompt(question) {
   });
 }
 
+function applyFile(src, dest, action) {
+  mkdirSync(dirname(dest), { recursive: true });
+  if (action === "append") {
+    const content = readFileSync(src, "utf8");
+    appendFileSync(dest, "\n\n" + content);
+  } else {
+    cpSync(src, dest);
+  }
+}
+
 export async function init(options) {
   const target = resolve(options.dir);
   const created = [];
   const skipped = [];
 
-  for (const file of STRUCTURE) {
+  const allFiles = [
+    ...STRUCTURE,
+    "CLAUDE.md",
+    ...options.conventions.map((c) => `conventions/${c}.md`),
+  ];
+
+  const existing = [];
+  const fresh = [];
+
+  for (const file of allFiles) {
     const dest = join(target, file);
-    const src = join(TEMPLATES, file);
-
     if (existsSync(dest) && !options.force) {
-      skipped.push(file);
-      continue;
+      existing.push(file);
+    } else {
+      fresh.push(file);
     }
+  }
 
-    mkdirSync(dirname(dest), { recursive: true });
-    cpSync(src, dest);
+  for (const file of fresh) {
+    const src = join(TEMPLATES, file);
+    const dest = join(target, file);
+    applyFile(src, dest, "replace");
     created.push(file);
   }
 
-  // Handle CLAUDE.md separately — prompt user if it already exists
-  const claudeDest = join(target, "CLAUDE.md");
-  const claudeSrc = join(TEMPLATES, "CLAUDE.md");
-
-  if (!existsSync(claudeDest) || options.force) {
-    mkdirSync(dirname(claudeDest), { recursive: true });
-    cpSync(claudeSrc, claudeDest);
-    created.push("CLAUDE.md");
-  } else {
+  if (existing.length > 0 && !options.force) {
     console.log("");
-    console.log("CLAUDE.md already exists.");
-    console.log("  1) Skip — keep existing file");
-    console.log("  2) Append — add agent-eng content to the end");
-    console.log("  3) Replace — overwrite with agent-eng template");
-    const answer = await prompt("Choose [1/2/3] (default: 1): ");
+    console.log(`${existing.length} file(s) already exist:`);
+    for (const f of existing) {
+      console.log(`  ${f}`);
+    }
+    console.log("");
+    console.log("  1) Skip all — keep existing files (default)");
+    console.log("  2) Append all — add agent-eng content to the end of each");
+    console.log("  3) Replace all — overwrite all with agent-eng templates");
+    console.log("  4) Decide per file — choose for each file individually");
+    console.log("  5) Pick files — specify which files to append/replace");
+    const answer = await prompt("Choose [1/2/3/4/5] (default: 1): ");
 
     if (answer === "2" || answer === "append") {
-      const content = readFileSync(claudeSrc, "utf8");
-      appendFileSync(claudeDest, "\n\n" + content);
-      created.push("CLAUDE.md (appended)");
+      for (const file of existing) {
+        applyFile(join(TEMPLATES, file), join(target, file), "append");
+        created.push(`${file} (appended)`);
+      }
     } else if (answer === "3" || answer === "replace") {
-      cpSync(claudeSrc, claudeDest);
-      created.push("CLAUDE.md (replaced)");
+      for (const file of existing) {
+        applyFile(join(TEMPLATES, file), join(target, file), "replace");
+        created.push(`${file} (replaced)`);
+      }
+    } else if (answer === "4") {
+      for (const file of existing) {
+        console.log("");
+        console.log(`  ${file}:`);
+        console.log("    1) Skip  2) Append  3) Replace");
+        const choice = await prompt("    Choose [1/2/3] (default: 1): ");
+        if (choice === "2" || choice === "append") {
+          applyFile(join(TEMPLATES, file), join(target, file), "append");
+          created.push(`${file} (appended)`);
+        } else if (choice === "3" || choice === "replace") {
+          applyFile(join(TEMPLATES, file), join(target, file), "replace");
+          created.push(`${file} (replaced)`);
+        } else {
+          skipped.push(file);
+        }
+      }
+    } else if (answer === "5") {
+      console.log("");
+      console.log("Enter file numbers to append/replace (comma-separated):");
+      for (let i = 0; i < existing.length; i++) {
+        console.log(`  ${i + 1}) ${existing[i]}`);
+      }
+      const picks = await prompt("Files to modify (e.g. 1,3): ");
+      const indices = picks
+        .split(",")
+        .map((s) => parseInt(s.trim(), 10) - 1)
+        .filter((i) => i >= 0 && i < existing.length);
+
+      const picked = new Set(indices);
+      for (let i = 0; i < existing.length; i++) {
+        if (!picked.has(i)) {
+          skipped.push(existing[i]);
+          continue;
+        }
+        const file = existing[i];
+        console.log(`  ${file}: 1) Append  2) Replace`);
+        const action = await prompt("  Choose [1/2] (default: 1): ");
+        if (action === "2" || action === "replace") {
+          applyFile(join(TEMPLATES, file), join(target, file), "replace");
+          created.push(`${file} (replaced)`);
+        } else {
+          applyFile(join(TEMPLATES, file), join(target, file), "append");
+          created.push(`${file} (appended)`);
+        }
+      }
     } else {
-      skipped.push("CLAUDE.md");
+      skipped.push(...existing);
     }
-  }
-
-  for (const convention of options.conventions) {
-    const file = `conventions/${convention}.md`;
-    const dest = join(target, file);
-    const src = join(TEMPLATES, file);
-
-    if (existsSync(dest) && !options.force) {
-      skipped.push(file);
-      continue;
-    }
-
-    mkdirSync(dirname(dest), { recursive: true });
-    cpSync(src, dest);
-    created.push(file);
   }
 
   console.log("");
@@ -113,7 +164,7 @@ export async function init(options) {
 
   if (skipped.length > 0) {
     console.log("");
-    console.log("Skipped (already exist, use --force to overwrite):");
+    console.log("Skipped (already exist):");
     for (const f of skipped) {
       console.log(`  ${f}`);
     }
