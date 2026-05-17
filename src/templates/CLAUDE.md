@@ -13,6 +13,7 @@ Agents own the **process** — architecture decisions, work decomposition, quali
 | **Decompose** | `/planner` agent | ADR/spec ready, work needs to be broken into tickets |
 | **Execute** | Claude Code **plan mode** (`shift+tab`) | Implementing a specific ticket (includes writing tests) |
 | **Review** | `/reviewer` agent | Code and tests ready for validation |
+| **Learn** | `/learner` agent | Feature complete and introduced a new technology or concept |
 | **Report** | `/summarizer` agent | Sprint or feature complete, stakeholder update needed |
 
 ### Why hybrid?
@@ -36,6 +37,17 @@ Agents own the **process** — architecture decisions, work decomposition, quali
 3. For each ticket: use plan mode (`shift+tab`) to implement it
 4. After implementation: run `/reviewer` to validate against acceptance criteria
 5. If the ticket touches an existing ADR's scope, verify the decision still holds
+6. If the feature introduced new technologies or concepts, run `/learner` for each one
+
+## After Completing a Feature
+
+When a feature is done and introduces new technologies, patterns, or concepts the user hasn't worked with before — automatically invoke `/learner` for each new concept. Look for:
+- New libraries or frameworks added to dependencies
+- New architectural patterns (e.g., event sourcing, SSE, pub/sub)
+- New language features or APIs used for the first time
+- New infrastructure concepts (e.g., WebSockets, gRPC, CRDT)
+
+This ensures the user can confidently explain every technology in their project.
 
 ## Testing in Plan Mode
 

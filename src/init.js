@@ -6,15 +6,20 @@ import { fileURLToPath } from "node:url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const TEMPLATES = join(__dirname, "templates");
 
-const STRUCTURE = [
+const FRAMEWORK_FILES = [
   ".claude/settings.json",
   ".claude/scripts/update-status.sh",
   ".claude/agents/architect.md",
   ".claude/agents/executor.md",
+  ".claude/agents/learner.md",
   ".claude/agents/planner.md",
   ".claude/agents/reviewer.md",
   ".claude/agents/summarizer.md",
   ".claude/agents/system-architect.md",
+  "orchestration.yaml",
+];
+
+const PROJECT_STATE_FILES = [
   "architecture/overview.md",
   "architecture/decisions/_template.md",
   "architecture/decisions/0001-how-we-work.md",
@@ -22,10 +27,12 @@ const STRUCTURE = [
   "tickets/_template.md",
   "tickets/_backlog.md",
   "tickets/example/001-example-ticket.md",
-  "orchestration.yaml",
   "architecture.yaml",
   "STATUS.md",
 ];
+
+const PROJECT_STATE_SET = new Set(PROJECT_STATE_FILES);
+const STRUCTURE = [...FRAMEWORK_FILES, ...PROJECT_STATE_FILES];
 
 function prompt(question) {
   const rl = createInterface({ input: process.stdin, output: process.stdout });
@@ -60,13 +67,18 @@ export async function init(options) {
 
   const existing = [];
   const fresh = [];
+  const protectedFiles = [];
 
   for (const file of allFiles) {
     const dest = join(target, file);
-    if (existsSync(dest) && !options.force) {
-      existing.push(file);
-    } else {
+    if (!existsSync(dest)) {
       fresh.push(file);
+    } else if (options.force) {
+      fresh.push(file);
+    } else if (PROJECT_STATE_SET.has(file)) {
+      protectedFiles.push(file);
+    } else {
+      existing.push(file);
     }
   }
 
@@ -148,6 +160,14 @@ export async function init(options) {
       }
     } else {
       skipped.push(...existing);
+    }
+  }
+
+  if (protectedFiles.length > 0) {
+    console.log("");
+    console.log("Protected (project state — use --force to overwrite):");
+    for (const f of protectedFiles) {
+      console.log(`  ${f}`);
     }
   }
 
