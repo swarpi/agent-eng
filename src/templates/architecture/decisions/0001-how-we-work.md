@@ -3,7 +3,7 @@
 **Status:** Accepted  
 **Date:** 2026-05-04  
 **Updated:** 2026-05-08  
-**Author:** swarpi
+**Author:** [your name]
 
 ## Context
 
@@ -25,7 +25,7 @@ We adopt a **hybrid approach**: specialized agents own the process, Claude Code 
 
 2. **Planner** — Takes specs and ADRs as input. Decomposes work into tickets scoped for plan mode sessions. Does not implement.
 
-3. **Reviewer** — Reviews diffs against acceptance criteria and linked ADRs. Checks for convention violations and test adequacy. Does not fix issues directly — flags them for fixing.
+3. **Reviewer** — Automatically invoked after each ticket. Reviews diffs against acceptance criteria and linked ADRs. Checks for convention violations and test adequacy. Updates ticket status and syncs the backlog. Does not fix issues directly — flags them for fixing via plan mode.
 
 4. **Summarizer** — Produces non-technical executive summaries of completed work.
 
@@ -36,7 +36,7 @@ Each ticket from the Planner is executed using Claude Code's plan mode (`shift+t
 - Executes within a single session with full context continuity
 - Adapts its depth to the task — simple ticket, simple plan
 
-The **Executor agent** remains as a fallback for cases where plan mode is unavailable or strict verification discipline is needed.
+After plan mode completes a ticket, the Reviewer is invoked automatically to validate the work and update tracking.
 
 ### When to skip the pipeline
 
@@ -61,7 +61,7 @@ All significant decisions are recorded as ADRs. All work items are tickets with 
 
 - More upfront documentation work for new features
 - Requires discipline to follow the process for larger changes
-- Plan mode doesn't produce persistent artifacts the way the Executor agent does
+- Plan mode doesn't produce persistent process artifacts (ADRs, reviews) — the agents handle that
 
 ### Neutral
 
@@ -75,7 +75,7 @@ Just talk to the AI and let it write code directly. Rejected because it leads to
 
 ### Fully agent-driven pipeline (previous approach)
 
-All eight agents in sequence, including Executor for implementation. Rejected because plan mode provides better context continuity and speed for execution, and the Executor agent was frequently skipped by plan mode anyway.
+All agents in sequence, including a dedicated Executor for implementation. Rejected because plan mode provides better context continuity and speed for execution, and the Executor agent was redundant — plan mode always superseded it in practice.
 
 ### Plan mode only (no agents)
 

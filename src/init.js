@@ -1,4 +1,4 @@
-import { appendFileSync, cpSync, existsSync, mkdirSync, readFileSync } from "node:fs";
+import { appendFileSync, cpSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { createInterface } from "node:readline";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -10,7 +10,7 @@ const FRAMEWORK_FILES = [
   ".claude/settings.json",
   ".claude/scripts/update-status.sh",
   ".claude/agents/architect.md",
-  ".claude/agents/executor.md",
+  ".claude/agents/code-auditor.md",
   ".claude/agents/learner.md",
   ".claude/agents/planner.md",
   ".claude/agents/reviewer.md",
@@ -33,6 +33,8 @@ const PROJECT_STATE_FILES = [
 
 const PROJECT_STATE_SET = new Set(PROJECT_STATE_FILES);
 const STRUCTURE = [...FRAMEWORK_FILES, ...PROJECT_STATE_FILES];
+
+export { FRAMEWORK_FILES, PROJECT_STATE_FILES };
 
 function prompt(question) {
   const rl = createInterface({ input: process.stdin, output: process.stdout });
@@ -82,6 +84,38 @@ export async function init(options) {
     }
   }
 
+  if (options.dryRun) {
+    console.log("");
+    console.log("Dry run — no files will be written.");
+
+    if (fresh.length > 0) {
+      console.log("");
+      console.log("Would create:");
+      for (const f of fresh) {
+        console.log(`  ${f}`);
+      }
+    }
+
+    if (existing.length > 0) {
+      console.log("");
+      console.log("Would conflict (already exist):");
+      for (const f of existing) {
+        console.log(`  ${f}`);
+      }
+    }
+
+    if (protectedFiles.length > 0) {
+      console.log("");
+      console.log("Protected (project state — would need --force):");
+      for (const f of protectedFiles) {
+        console.log(`  ${f}`);
+      }
+    }
+
+    console.log("");
+    return;
+  }
+
   for (const file of fresh) {
     const src = join(TEMPLATES, file);
     const dest = join(target, file);
@@ -101,7 +135,8 @@ export async function init(options) {
     console.log("  3) Replace all — overwrite all with agent-eng templates");
     console.log("  4) Decide per file — choose for each file individually");
     console.log("  5) Pick files — specify which files to append/replace");
-    const answer = await prompt("Choose [1/2/3/4/5] (default: 1): ");
+    console.log("  6) AI take the wheel — stage new versions and let your AI coding agent merge them");
+    const answer = await prompt("Choose [1/2/3/4/5/6] (default: 1): ");
 
     if (answer === "2" || answer === "append") {
       for (const file of existing) {
@@ -158,6 +193,67 @@ export async function init(options) {
           created.push(`${file} (appended)`);
         }
       }
+    } else if (answer === "6" || answer === "ai") {
+      const inAgent = !!process.env.CLAUDE_PROJECT_DIR;
+      let proceed = inAgent;
+
+      if (!inAgent) {
+        console.log("");
+        console.log("  This option stages the new template versions for an AI coding agent");
+        console.log("  (Claude Code, Copilot, Cursor, etc.) to intelligently merge with your");
+        console.log("  existing files. It works best when run inside an AI coding agent session.");
+        console.log("");
+        const confirm = await prompt("  Are you running inside an AI coding agent? [y/N]: ");
+        proceed = confirm === "y" || confirm === "yes";
+      }
+
+      if (!proceed) {
+        console.log("");
+        console.log("  Recommended: run `npx agent-eng init` inside your AI coding agent.");
+        console.log("  The agent will see the staged files and merge them for you.");
+        skipped.push(...existing);
+      } else {
+        const upgradeDir = join(target, ".agent-eng-upgrade");
+        mkdirSync(upgradeDir, { recursive: true });
+
+        for (const file of existing) {
+          const src = join(TEMPLATES, file);
+          const dest = join(upgradeDir, file);
+          mkdirSync(dirname(dest), { recursive: true });
+          cpSync(src, dest);
+          created.push(`${file} (staged for AI merge)`);
+        }
+
+        const instructions = [
+          "# AI Merge Instructions",
+          "",
+          "New agent-eng template versions have been staged in this directory.",
+          "For each file below, merge the new version with the existing project file,",
+          "preserving the user's customizations while incorporating new template content.",
+          "",
+          "## Files to merge",
+          "",
+          ...existing.map((f) => `- \`${f}\` (new) → \`../${f}\` (existing)`),
+          "",
+          "## Guidelines",
+          "",
+          "- Preserve project-specific customizations (names, descriptions, settings)",
+          "- Add new sections, agents, or fields from the template that don't exist yet",
+          "- Update boilerplate sections (process, output format) to the new version",
+          "- If a section was intentionally removed by the user, don't re-add it",
+          "- When in doubt, keep the user's version and note what was skipped",
+          "",
+          "After merging, delete this `.agent-eng-upgrade/` directory.",
+          "",
+        ];
+        writeFileSync(join(upgradeDir, "MERGE.md"), instructions.join("\n"));
+
+        console.log("");
+        console.log("  Staged new versions in .agent-eng-upgrade/");
+        console.log("  Your AI coding agent can now merge them with your existing files.");
+        console.log("  See .agent-eng-upgrade/MERGE.md for instructions.");
+        console.log("  Delete .agent-eng-upgrade/ when done.");
+      }
     } else {
       skipped.push(...existing);
     }
@@ -194,7 +290,6 @@ export async function init(options) {
   console.log("Next steps:");
   console.log("  1. Review CLAUDE.md and customize for your project");
   console.log("  2. Pick the conventions that match your stack");
-  console.log("  3. Start with the Architect subagent: ask Claude to use the 'architect' agent to create your first ADR");
-  console.log("  4. Add the SITE_REBUILD_TOKEN secret and 'showcase' topic to enable auto site rebuilds");
+  console.log("  3. Start with the Architect: ask Claude to use the 'architect' agent to create your first ADR");
   console.log("");
 }

@@ -33,7 +33,7 @@ Ask one follow-up question that tests whether they actually understand the conce
 
 ### 6. Save the learning
 
-Write the completed learning to `~/Developer/AgentEngineerWorkflow/learnings/{concept-slug}.md` with this format:
+Write the completed learning to `learnings/{concept-slug}.md` (relative to the project root) with this format:
 
 ```markdown
 # {Concept Name}
@@ -53,7 +53,7 @@ Write the completed learning to `~/Developer/AgentEngineerWorkflow/learnings/{co
 - {concept 3}
 ```
 
-Create the `~/Developer/AgentEngineerWorkflow/learnings/` directory if it doesn't exist.
+Create the `learnings/` directory at the project root if it doesn't exist.
 
 ## Guidelines
 

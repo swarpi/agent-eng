@@ -6,6 +6,9 @@
   "bin": {
     "agent-eng": "./bin/agent-eng.js"
   },
+  "scripts": {
+    "test": "node --test test/*.test.js"
+  },
   "files": [
     "bin",
     "src"

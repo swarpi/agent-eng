@@ -33,7 +33,7 @@ Any additional context, edge cases to consider, or implementation hints.
 
 ## Implementation Plan
 
-_To be filled in by the executor before starting work._
+_To be filled in before starting work._
 
 1. Step 1
 2. Step 2

@@ -31,7 +31,7 @@ Delete this example folder when you create your first real feature.
 
 ## Implementation Plan
 
-_To be filled in by the executor before starting work._
+_To be filled in before starting work._
 
 1. Step 1
 2. Step 2

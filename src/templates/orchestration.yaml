@@ -54,31 +54,37 @@ agents:
     color: indigo
     builtin: true
 
-  - id: executor
-    kind: execution
-    title: Executor (fallback)
-    tagline: Guided execution with strict verification
-    description: >
-      Fallback for when plan mode is unavailable or when enforced verification
-      discipline is needed. Most tickets should use plan mode instead.
-    outputs:
-      - Code
-      - PRs
-      - Plan docs
-    color: gray
-    docLink: /.claude/agents/executor.md
-
   - id: reviewer
     kind: validation
     title: Reviewer
-    tagline: Validates against acceptance criteria
-    description: Validates code and tests against the original acceptance criteria. Flags issues back for fixing and provides final approval.
+    tagline: Validates and closes tickets
+    description: >
+      Automatically invoked after plan mode completes a ticket. Validates code
+      and tests against acceptance criteria, updates ticket status, and syncs
+      the backlog. Flags issues back for fixing via plan mode.
     outputs:
       - Feedback
       - Approval
-      - Notes
+      - Ticket updates
+      - Backlog sync
     color: amber
     docLink: /.claude/agents/reviewer.md
+
+  - id: code-auditor
+    kind: validation
+    title: Code Auditor
+    tagline: Hunts structural issues and AI code slop
+    description: >
+      Optional, manually invoked agent that audits code for over-abstraction,
+      impossible-state guards, reinvented wheels, and subtly wrong assumptions.
+      Ranks findings by severity. Does not fix — flags issues with suggested directions.
+      Claude may proactively suggest running it after large diffs or before commits.
+    outputs:
+      - Audit report
+      - Severity-ranked findings
+    color: red
+    optional: true
+    docLink: /.claude/agents/code-auditor.md
 
   - id: summarizer
     kind: reporting
@@ -108,34 +114,19 @@ connections:
     artifact: Tickets
     note: Each ticket becomes a separate plan mode session
 
-  # Fallback execution path
-  - from: planner
-    to: executor
-    artifact: Tickets
-    type: fallback
-    note: Use when plan mode is unavailable
-
-  # Validation phase
+  # Validation phase (automatic — reviewer runs after every ticket)
   - from: plan-mode
     to: reviewer
     artifact: Code · Tests
+    type: automatic
+    note: Reviewer is invoked automatically after plan mode completes a ticket
 
-  - from: executor
-    to: reviewer
-    artifact: Code · Tests
-    type: fallback
-
-  # Feedback loops
+  # Feedback loop
   - from: reviewer
     to: plan-mode
     artifact: Feedback
     type: feedback
     note: Fix issues in a new plan mode session
-
-  - from: reviewer
-    to: executor
-    artifact: Feedback
-    type: feedback
 
   # Reporting trigger
   - from: reviewer

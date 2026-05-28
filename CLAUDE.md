@@ -10,12 +10,12 @@ Running `npx agent-eng init` creates a directory structure with Claude Code suba
 - **Architect** — Analyzes requirements, asks clarifying questions, produces Architecture Decision Records (ADRs). Does not write code.
 - **System Architect** — Maps the runtime architecture as `architecture.yaml` (components, tiers, connections).
 - **Planner** — Reads ADRs and specs, decomposes work into tickets scoped for plan mode sessions. Does not implement.
-- **Reviewer** — Validates code and tests against acceptance criteria and ADRs. Checks test adequacy. Flags issues but does not fix them.
+- **Reviewer** — Automatically invoked after each ticket. Validates code and tests against acceptance criteria. Updates ticket status and syncs the backlog. Flags issues but does not fix them.
+- **Code Auditor** — Optional. Audits code for structural quality, over-abstraction, and AI code slop. Can be invoked manually or proactively suggested after large diffs.
 - **Summarizer** — Generates executive summaries of completed sprints or features for stakeholders.
 
 **Execution** (built-in):
 - **Plan mode** (`shift+tab`) — Claude Code's native plan-then-execute cycle. Each ticket from the Planner is implemented as a separate plan mode session.
-- **Executor agent** — Fallback for when plan mode is unavailable or strict verification is needed.
 
 ## Project Structure
 
@@ -34,8 +34,8 @@ agent-eng/
 │       │       ├── architect.md
 │       │       ├── system-architect.md
 │       │       ├── planner.md
-│       │       ├── executor.md
 │       │       ├── reviewer.md
+│       │       ├── code-auditor.md
 │       │       └── summarizer.md
 │       ├── CLAUDE.md          # Project instructions for AI agents
 │       ├── orchestration.yaml # Machine-readable workflow definition

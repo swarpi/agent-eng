@@ -1,6 +1,6 @@
 # agent-eng
 
-Scaffold a structured agentic engineering workflow into any project. Run one command to set up the directory structure, system prompts, templates, and conventions for AI-assisted development with separated roles (Architect, Planner, Executor, Reviewer) and system architecture documentation.
+Scaffold a structured agentic engineering workflow into any project. One command sets up the directory structure, agent prompts, templates, and conventions for AI-assisted development using a **hybrid approach**: specialized agents own the process (decisions, planning, review), and Claude Code's built-in plan mode owns execution.
 
 ## Quick Start
 
@@ -8,30 +8,43 @@ Scaffold a structured agentic engineering workflow into any project. Run one com
 npx agent-eng init
 ```
 
-This creates the following structure in your project: 
+Preview what will be created before writing anything:
+
+```bash
+npx agent-eng init --dry-run
+```
+
+### What gets created
 
 ```
 ├── CLAUDE.md                              # Project instructions for AI agents
 ├── orchestration.yaml                     # Agent workflow definition (roles, outputs)
-├── architecture.yaml                      # System architecture definition (components, connections)
+├── architecture.yaml                      # System architecture template (components, connections)
+├── STATUS.md                              # Live project dashboard (auto-updated)
 ├── .claude/
-│   ├── settings.json                      # Claude Code project settings (MCP servers)
-│   └── agents/                            # Auto-wired Claude Code subagents — invoke via Agent tool
-│       ├── architect.md
-│       ├── system-architect.md
-│       ├── planner.md
-│       ├── executor.md
-│       ├── reviewer.md
-│       └── summarizer.md
+│   ├── settings.json                      # Claude Code project settings (hooks)
+│   ├── scripts/
+│   │   └── update-status.sh               # Auto-updates STATUS.md on commit/push
+│   └── agents/                            # Claude Code subagents
+│       ├── architect.md                   # Design decisions and ADRs
+│       ├── system-architect.md            # Runtime architecture mapping
+│       ├── planner.md                     # Work decomposition into tickets
+│       ├── reviewer.md                    # Automatic review and ticket tracking
+│       ├── code-auditor.md                # Optional structural quality audit
+│       ├── learner.md                     # Deep-dive learning for technologies used
+│       └── summarizer.md                  # Executive summaries for stakeholders
 ├── architecture/
 │   ├── overview.md                        # High-level architecture overview
 │   └── decisions/
 │       ├── _template.md                   # ADR template
-│       └── 0001-how-we-work.md            # Seed ADR: the workflow itself
+│       └── 0001-how-we-work.md            # Seed ADR explaining the workflow
 ├── specs/
 │   └── _template.md                       # Feature specification template
 ├── tickets/
-│   └── _template.md                       # Work ticket template
+│   ├── _template.md                       # Work ticket template
+│   ├── _backlog.md                        # Sprint board
+│   └── example/
+│       └── 001-example-ticket.md          # Example ticket
 └── conventions/
     ├── typescript.md                      # TypeScript coding standards
     ├── python.md                          # Python coding standards
@@ -40,63 +53,55 @@ This creates the following structure in your project:
 
 ## Usage
 
-### Initialize with all conventions (default)
-
 ```bash
-agent-eng init
+agent-eng init                              # Scaffold with all conventions
+agent-eng init --conventions typescript     # Only TypeScript conventions
+agent-eng init --conventions python,java    # Multiple conventions
+agent-eng init --dir ./my-project           # Target a specific directory
+agent-eng init --force                      # Overwrite existing files
+agent-eng init --dry-run                    # Preview without writing
 ```
 
-### Pick specific conventions
-
-```bash
-agent-eng init --conventions typescript,python
-```
-
-### Initialize in a specific directory
-
-```bash
-agent-eng init --dir ./my-project
-```
-
-### Overwrite existing files
-
-```bash
-agent-eng init --force
-```
+Existing files are never overwritten unless `--force` is passed. Project state files (tickets, specs, architecture docs) are additionally protected — they require `--force` even when other files are being updated.
 
 ## The Workflow
 
-The scaffolded workflow separates AI-assisted engineering into five roles:
+Agents own the **process** — architecture decisions, work decomposition, quality gates. Claude Code plan mode (`shift+tab`) owns the **execution** — implementing tickets in focused sessions.
 
-| Role | What it does | What it produces |
-|------|-------------|-----------------|
-| **Architect** | Analyzes requirements, asks clarifying questions, evaluates alternatives | Architecture Decision Records (ADRs) |
-| **System Architect** | Maps the runtime system: components, connections, protocols, tiers | `architecture.yaml` |
-| **Planner** | Reads ADRs and specs, decomposes work into focused chunks | Tickets with acceptance criteria |
-| **Executor** | Implements tickets following conventions, proposes plan first | Code and PRs |
-| **Reviewer** | Validates code against acceptance criteria and ADRs | Approval or actionable feedback |
+| Phase | How | What it produces |
+|-------|-----|------------------|
+| **Decide** | `/architect` agent | ADRs, specs, constraints |
+| **Map** | `/system-architect` agent | `architecture.yaml` |
+| **Decompose** | `/planner` agent | Tickets with acceptance criteria |
+| **Execute** | Plan mode (`shift+tab`) | Code and tests |
+| **Review** | `/reviewer` agent *(automatic)* | Approval or feedback, ticket/backlog updates |
+| **Audit** | `/code-auditor` agent *(optional)* | Severity-ranked structural findings |
+| **Learn** | `/learner` agent | Technology deep-dives with interview prep |
+| **Report** | `/summarizer` agent | Executive summaries |
 
-Each role is wired as a Claude Code subagent in `.claude/agents/`. Invoke them via the Agent tool (`subagent_type: "architect"`, etc.), or just describe the task — Claude will route to the right subagent based on each agent's `description` frontmatter.
+### When to use what
+
+- **New feature or significant decision** — Start with `/architect`, then full pipeline
+- **Well-scoped ticket** — Plan mode directly
+- **Bug fix or small change** — Just implement, no ceremony needed
+
+The reviewer runs automatically after each ticket to validate acceptance criteria, update ticket status, and sync the backlog.
 
 ## YAML Definitions
 
-### `orchestration.yaml` — Agent Workflow
+**`orchestration.yaml`** defines the agent roles, their outputs, and how they connect. Used to visualize the development workflow.
 
-Defines the agent roles, their outputs, and how they connect. Used to visualize the development workflow.
-
-### `architecture.yaml` — System Architecture
-
-Defines the runtime system components, their tiers (client/service/engine/data), technologies, subcomponents, and connections with protocols. Used to visualize the system architecture.
+**`architecture.yaml`** defines the runtime system components, their tiers, technologies, subcomponents, and connections with protocols. Used to visualize the system architecture.
 
 ## After Initialization
 
-1. **Review `CLAUDE.md`** — Customize the project instructions for your specific project
-2. **Pick your conventions** — Keep the ones that match your stack, remove the rest
-3. **Start with the Architect** — Ask Claude to use the `architect` subagent to create your first ADR
-4. **Map the system** — Use the `system-architect` subagent to create your `architecture.yaml`
-5. **Plan the work** — Use the `planner` subagent to decompose your ADR into tickets
-6. **Execute** — Use the `executor` subagent to implement a ticket following your conventions
-7. **Review** — Use the `reviewer` subagent to validate the work (tests are written during execution)
+1. **Review `CLAUDE.md`** — Customize the project instructions for your stack
+2. **Pick your conventions** — Keep the ones that match, remove the rest
+3. **Start with the Architect** — Ask Claude to use the `architect` agent to create your first ADR
+4. **Map the system** — Use `/system-architect` to document your runtime architecture
+5. **Plan the work** — Use `/planner` to decompose your ADR into tickets
+6. **Execute** — Use plan mode (`shift+tab`) to implement each ticket
+7. **Review happens automatically** — The reviewer validates and updates tracking after each ticket
 
 ## License
 

@@ -12,7 +12,8 @@ Agents own the **process** — architecture decisions, work decomposition, quali
 | **Map** | `/system-architect` agent | New system or major structural change |
 | **Decompose** | `/planner` agent | ADR/spec ready, work needs to be broken into tickets |
 | **Execute** | Claude Code **plan mode** (`shift+tab`) | Implementing a specific ticket (includes writing tests) |
-| **Review** | `/reviewer` agent | Code and tests ready for validation |
+| **Review** | `/reviewer` agent *(automatic)* | Runs after every ticket — validates, updates status, syncs backlog |
+| **Audit** | `/code-auditor` agent *(optional)* | After large diffs, before commits, or on request — structural quality check |
 | **Learn** | `/learner` agent | Feature complete and introduced a new technology or concept |
 | **Report** | `/summarizer` agent | Sprint or feature complete, stakeholder update needed |
 
@@ -35,7 +36,7 @@ Agents own the **process** — architecture decisions, work decomposition, quali
 1. Check if an ADR exists in `architecture/decisions/` — if not, run `/architect` first
 2. Check if tickets exist in `tickets/` — if not, run `/planner` first
 3. For each ticket: use plan mode (`shift+tab`) to implement it
-4. After implementation: run `/reviewer` to validate against acceptance criteria
+4. **After each ticket**: you MUST invoke `/reviewer` — it validates acceptance criteria, updates the ticket status, and syncs the backlog. Never skip this step.
 5. If the ticket touches an existing ADR's scope, verify the decision still holds
 6. If the feature introduced new technologies or concepts, run `/learner` for each one
 
@@ -111,10 +112,6 @@ STATUS.md is a live project dashboard. Git sections (branch, commits, file chang
 5. **Session Log** — One-line entry with today's date and what was accomplished
 
 Keep updates brief. STATUS.md is a dashboard, not a report — use `/summarizer` for detailed retrospectives.
-
-## MCP Servers
-
-- **Context7** — Pulls up-to-date, version-specific documentation from live code libraries. Use `resolve` then `get-library-docs` before writing code that depends on a third-party library.
 
 ## Conventions
 

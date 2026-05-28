@@ -10,6 +10,7 @@ Options:
   --conventions <list>   Comma-separated list: typescript,python,java (default: all)
   --dir <path>           Target directory (default: current directory)
   --force                Overwrite existing files
+  --dry-run              Show what would be created without writing files
   -h, --help             Show this help
 
 Examples:
@@ -42,6 +43,7 @@ function parseInitArgs(args) {
     conventions: ["typescript", "python", "java"],
     dir: process.cwd(),
     force: false,
+    dryRun: false,
   };
 
   for (let i = 0; i < args.length; i++) {
@@ -54,6 +56,9 @@ function parseInitArgs(args) {
         break;
       case "--force":
         options.force = true;
+        break;
+      case "--dry-run":
+        options.dryRun = true;
         break;
       case "-h":
       case "--help":

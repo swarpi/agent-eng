@@ -10,9 +10,9 @@
 | Map | |
 | Decompose | |
 | Execute | |
-| Test | |
 | Review | |
-| Maintain | |
+| Audit | |
+| Learn | |
 | Report | |
 
 ## Active Work
