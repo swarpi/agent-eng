@@ -7,14 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.15.0] - 2026-05-28
+
 ### Added
 - `--dry-run` flag to preview what files would be created without writing them
 - "AI take the wheel" option (option 6) for upgrades — stages new templates for an AI coding agent to merge with existing files
+- Code-auditor agent for structural quality review (optional, manually invoked)
 - Test suite using `node:test` (zero dependencies)
 
 ### Changed
+- Reviewer now runs automatically after each ticket and updates ticket status and backlog
 - Context7 MCP server removed from default settings (users add MCP servers post-init)
 - Generic paths and placeholders replace hardcoded personal references
+- STATUS.md phase table aligned with workflow (Audit, Learn replace Test, Maintain)
+- README rewritten to reflect hybrid workflow and current agent roster
+
+### Removed
+- Executor agent (replaced by Claude Code plan mode)
 
 ## [0.14.0] - 2026-05-28
 
