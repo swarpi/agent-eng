@@ -111,6 +111,34 @@ describe("init", () => {
     assert.ok(output.includes("CLAUDE.md"), "should list CLAUDE.md");
   });
 
+  it("upgrade stages existing files for AI merge", async () => {
+    const existingFile = "CLAUDE.md";
+    const sentinel = "MY CUSTOM CLAUDE.md";
+    writeFileSync(join(tempDir, existingFile), sentinel);
+
+    await init({ ...defaultOptions(tempDir), upgrade: true });
+
+    const content = readFileSync(join(tempDir, existingFile), "utf8");
+    assert.equal(content, sentinel, "existing file should not be overwritten");
+
+    const upgradeDir = join(tempDir, ".agent-eng-upgrade");
+    assert.ok(existsSync(upgradeDir), ".agent-eng-upgrade/ should exist");
+    assert.ok(existsSync(join(upgradeDir, existingFile)), "staged file should exist");
+    assert.ok(existsSync(join(upgradeDir, "MERGE.md")), "MERGE.md should exist");
+
+    const mergeInstructions = readFileSync(join(upgradeDir, "MERGE.md"), "utf8");
+    assert.ok(mergeInstructions.includes(existingFile), "MERGE.md should reference the file");
+  });
+
+  it("upgrade creates new files normally", async () => {
+    await init({ ...defaultOptions(tempDir), upgrade: true });
+
+    for (const file of FRAMEWORK_FILES) {
+      assert.ok(existsSync(join(tempDir, file)), `missing new file: ${file}`);
+    }
+    assert.ok(!existsSync(join(tempDir, ".agent-eng-upgrade")), "no upgrade dir when all files are new");
+  });
+
   it("filters conventions correctly", async () => {
     await init({ ...defaultOptions(tempDir), conventions: ["typescript"] });
 

@@ -116,6 +116,79 @@ export async function init(options) {
     return;
   }
 
+  if (options.upgrade) {
+    const toMerge = [...existing, ...protectedFiles];
+
+    for (const file of fresh) {
+      const src = join(TEMPLATES, file);
+      const dest = join(target, file);
+      applyFile(src, dest, "replace");
+      created.push(file);
+    }
+
+    if (toMerge.length > 0) {
+      const upgradeDir = join(target, ".agent-eng-upgrade");
+      mkdirSync(upgradeDir, { recursive: true });
+
+      for (const file of toMerge) {
+        const src = join(TEMPLATES, file);
+        const dest = join(upgradeDir, file);
+        mkdirSync(dirname(dest), { recursive: true });
+        cpSync(src, dest);
+        created.push(`${file} (staged for AI merge)`);
+      }
+
+      const instructions = [
+        "# AI Merge Instructions",
+        "",
+        "New agent-eng template versions have been staged in this directory.",
+        "For each file below, merge the new version with the existing project file,",
+        "preserving the user's customizations while incorporating new template content.",
+        "",
+        "## Files to merge",
+        "",
+        ...toMerge.map((f) => `- \`${f}\` (new) → \`../${f}\` (existing)`),
+        "",
+        "## Guidelines",
+        "",
+        "- Preserve project-specific customizations (names, descriptions, settings)",
+        "- Add new sections, agents, or fields from the template that don't exist yet",
+        "- Update boilerplate sections (process, output format) to the new version",
+        "- If a section was intentionally removed by the user, don't re-add it",
+        "- When in doubt, keep the user's version and note what was skipped",
+        "",
+        "After merging, delete this `.agent-eng-upgrade/` directory.",
+        "",
+      ];
+      writeFileSync(join(upgradeDir, "MERGE.md"), instructions.join("\n"));
+    }
+
+    console.log("");
+    console.log("✔ Upgrade staged");
+    if (toMerge.length > 0) {
+      console.log("");
+      console.log("Staged for AI merge (.agent-eng-upgrade/):");
+      for (const f of toMerge) {
+        console.log(`  ${f}`);
+      }
+      console.log("");
+      console.log("Your AI coding agent can now merge these with your existing files.");
+      console.log("See .agent-eng-upgrade/MERGE.md for instructions.");
+      console.log("Delete .agent-eng-upgrade/ when done.");
+    }
+
+    if (created.filter((f) => !f.includes("staged")).length > 0) {
+      console.log("");
+      console.log("Created (new files):");
+      for (const f of created) {
+        if (!f.includes("staged")) console.log(`  ${f}`);
+      }
+    }
+
+    console.log("");
+    return;
+  }
+
   for (const file of fresh) {
     const src = join(TEMPLATES, file);
     const dest = join(target, file);

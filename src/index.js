@@ -10,6 +10,7 @@ Options:
   --conventions <list>   Comma-separated list: typescript,python,java (default: all)
   --dir <path>           Target directory (default: current directory)
   --force                Overwrite existing files
+  --upgrade              Non-interactive AI merge — stage changed files for your AI coding agent
   --dry-run              Show what would be created without writing files
   -h, --help             Show this help
 
@@ -44,6 +45,7 @@ function parseInitArgs(args) {
     dir: process.cwd(),
     force: false,
     dryRun: false,
+    upgrade: false,
   };
 
   for (let i = 0; i < args.length; i++) {
@@ -59,6 +61,9 @@ function parseInitArgs(args) {
         break;
       case "--dry-run":
         options.dryRun = true;
+        break;
+      case "--upgrade":
+        options.upgrade = true;
         break;
       case "-h":
       case "--help":
