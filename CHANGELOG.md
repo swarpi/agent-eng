@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.15.1] - 2026-05-30
+
+### Fixed
+- Architect agent now auto-invokes for new feature requests (CLAUDE.md instruction strengthened)
+- Reviewer agent now triggers at ticket completion time by anchoring the instruction in the ticket template's Post-Implementation section, solving the temporal alignment problem where the instruction was read at feature-start but needed to fire at ticket-end
+- Planner output format updated to include Post-Implementation section in generated tickets
+
 ## [0.15.0] - 2026-05-28
 
 ### Added
