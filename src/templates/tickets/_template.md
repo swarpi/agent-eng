@@ -38,3 +38,7 @@ _To be filled in before starting work._
 1. Step 1
 2. Step 2
 3. Step 3
+
+## Post-Implementation
+
+> **MANDATORY:** When implementation is complete and all checks pass, invoke `/reviewer` with this ticket before proceeding to the next ticket.

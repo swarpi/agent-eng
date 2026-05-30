@@ -79,6 +79,10 @@ tickets/
 
 ## Notes
 ...
+
+## Post-Implementation
+
+> **MANDATORY:** When implementation is complete and all checks pass, invoke `/reviewer` with this ticket before proceeding to the next ticket.
 ```
 
 ## Sizing Guidelines
