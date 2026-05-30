@@ -12,7 +12,7 @@ Agents own the **process** — architecture decisions, work decomposition, quali
 | **Map** | `/system-architect` agent | New system or major structural change |
 | **Decompose** | `/planner` agent | ADR/spec ready, work needs to be broken into tickets |
 | **Execute** | Claude Code **plan mode** (`shift+tab`) | Implementing a specific ticket (includes writing tests) |
-| **Review** | `/reviewer` agent *(automatic)* | Runs after every ticket — validates, updates status, syncs backlog |
+| **Review** | `/ticket-reviewer` agent *(automatic)* | Runs after every ticket — validates, updates status, syncs backlog |
 | **Audit** | `/code-auditor` agent *(optional)* | After large diffs, before commits, or on request — structural quality check |
 | **Learn** | `/learner` agent | Feature complete and introduced a new technology or concept |
 | **Report** | `/summarizer` agent | Sprint or feature complete, stakeholder update needed |
@@ -38,7 +38,7 @@ Agents own the **process** — architecture decisions, work decomposition, quali
 1. **New feature or significant change** → you MUST invoke `/architect` first. No exceptions. Do not skip this step.
 2. Check if tickets exist in `tickets/` — if not, run `/planner` to decompose the ADR into tickets
 3. For each ticket: use plan mode (`shift+tab`) to implement it
-4. After each ticket completes, the reviewer runs automatically (see "After Completing Any Ticket" below)
+4. After each ticket completes, the ticket-reviewer runs automatically (see "After Completing Any Ticket" below)
 5. If the ticket touches an existing ADR's scope, verify the decision still holds
 6. If the feature introduced new technologies or concepts, run `/learner` for each one
 
@@ -71,7 +71,7 @@ Follow the project's existing test framework and patterns. Test observable behav
 
 ## After Completing Any Ticket
 
-**When you finish implementing a ticket — after tests pass, lint is clean, and code compiles — you MUST invoke `/reviewer` before doing anything else.** Do not move to the next ticket. Do not ask the user what to do next. Invoke the reviewer with the ticket path. The reviewer validates acceptance criteria, updates ticket status, and syncs the backlog.
+**When you finish implementing a ticket — after tests pass, lint is clean, and code compiles — you MUST invoke `/ticket-reviewer` before doing anything else.** Do not move to the next ticket. Do not ask the user what to do next. Invoke the ticket-reviewer with the ticket path. The ticket-reviewer validates acceptance criteria, updates ticket status, and syncs the backlog.
 
 ## Sub-Agent Deployment
 
