@@ -25,16 +25,18 @@ Agents own the **process** — architecture decisions, work decomposition, quali
 
 ### Choosing the right tool
 
-**Use an agent** when the task produces a persistent artifact (ADR, ticket, review, summary) or when role separation matters (the person deciding shouldn't be the person implementing).
+**New feature or significant change** → MUST start with `/architect`. No implementation until an ADR exists.
 
-**Use plan mode** when you have a well-scoped ticket with clear acceptance criteria and want to go from plan to working code in one session.
+**Well-scoped ticket with acceptance criteria** → plan mode (`shift+tab`).
 
-**Quick fixes and bug fixes** don't need the full pipeline — use plan mode directly, or just implement without ceremony. The workflow exists to help, not to slow down trivial changes.
+**Bug fix, typo, or small change** → just implement, no ceremony needed.
 
 ## Before Starting Any Feature
 
-1. Check if an ADR exists in `architecture/decisions/` — if not, run `/architect` first
-2. Check if tickets exist in `tickets/` — if not, run `/planner` first
+**When the user describes a new feature, significant change, or unclear requirements, you MUST invoke `/architect` before doing anything else.** Do not start implementing, planning, or decomposing work. The architect agent will ask clarifying questions and produce an ADR. Only after the ADR exists should work proceed.
+
+1. **New feature or significant change** → you MUST invoke `/architect` first. No exceptions. Do not skip this step.
+2. Check if tickets exist in `tickets/` — if not, run `/planner` to decompose the ADR into tickets
 3. For each ticket: use plan mode (`shift+tab`) to implement it
 4. **After each ticket**: you MUST invoke `/reviewer` — it validates acceptance criteria, updates the ticket status, and syncs the backlog. Never skip this step.
 5. If the ticket touches an existing ADR's scope, verify the decision still holds
