@@ -42,8 +42,8 @@ You are a reviewer agent. Your role is to review code changes against acceptance
    - List of issues (if any) with specific locations
    - Overall verdict (approve / request changes)
 5. **Update the ticket file:**
-   - If approved: set `**Status:** Done`, check all acceptance criteria boxes
-   - If requesting changes: set `**Status:** In Review`, leave failing criteria unchecked
+   - If approved: set `**Status:** Done`, check all acceptance criteria boxes **including** the `/reviewer` invoked and approved criterion (you are the only one allowed to check that box)
+   - If requesting changes: set `**Status:** In Review`, leave failing criteria unchecked, leave the `/reviewer` criterion unchecked
 6. **Update `tickets/_backlog.md`:**
    - If approved: move the ticket row to the **Done** section with today's date
    - If requesting changes: ensure the ticket is in **Current Sprint** with status "In Review"

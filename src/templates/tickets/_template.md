@@ -22,6 +22,7 @@ One sentence describing what "done" looks like.
 - [ ] Tests pass
 - [ ] No lint errors
 - [ ] Documentation updated (if applicable)
+- [ ] **`/reviewer` invoked and approved** — do NOT check this box manually. Only the reviewer agent marks this criterion.
 
 ## Out of Scope
 
@@ -41,4 +42,4 @@ _To be filled in before starting work._
 
 ## Post-Implementation
 
-> **MANDATORY:** When implementation is complete and all checks pass, invoke `/reviewer` with this ticket before proceeding to the next ticket.
+> The last acceptance criterion (`/reviewer` invoked and approved) is a hard gate. When implementation is complete and all other checks pass, invoke `/reviewer` with this ticket. The reviewer — not you — checks that box. A ticket is not Done until the reviewer approves it.
