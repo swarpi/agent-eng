@@ -86,17 +86,17 @@ agents:
     optional: true
     docLink: /src/templates/.claude/agents/code-auditor.md
 
-  - id: summarizer
+  - id: html-summarizer
     kind: reporting
-    title: Summarizer
-    tagline: Communicates completed work to stakeholders
-    description: Reads tickets, ADRs, specs, git history, and test results to produce concise, non-technical executive summaries.
+    title: HTML Summarizer
+    tagline: Produces visual slide decks of delivered work
+    description: Generates self-contained HTML presentations with architecture diagrams, code walkthroughs, and decision records. Opens directly in a browser.
     outputs:
-      - Executive summaries
-      - Sprint recaps
-      - Stakeholder reports
+      - HTML slide decks
+      - Architecture diagrams
+      - Visual summaries
     color: teal
-    docLink: /src/templates/.claude/agents/summarizer.md
+    docLink: /src/templates/.claude/agents/html-summarizer.md
 
 connections:
   # Process phase: agents produce artifacts
@@ -130,7 +130,7 @@ connections:
 
   # Reporting trigger
   - from: reviewer
-    to: summarizer
+    to: html-summarizer
     artifact: Completed work context
     type: trigger
 

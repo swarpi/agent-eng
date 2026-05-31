@@ -14,7 +14,7 @@ const FRAMEWORK_FILES = [
   ".claude/agents/learner.md",
   ".claude/agents/planner.md",
   ".claude/agents/ticket-verifier.md",
-  ".claude/agents/summarizer.md",
+  ".claude/agents/html-summarizer.md",
   ".claude/agents/system-architect.md",
   "orchestration.yaml",
 ];

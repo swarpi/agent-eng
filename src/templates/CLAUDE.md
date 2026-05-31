@@ -15,7 +15,7 @@ Agents own the **process** — architecture decisions, work decomposition, quali
 | **Verify** | `/ticket-verifier` agent *(automatic)* | Runs after every ticket — validates, updates status, syncs backlog |
 | **Audit** | `/code-auditor` agent *(optional)* | After large diffs, before commits, or on request — structural quality check |
 | **Learn** | `/learner` agent | Feature complete and introduced a new technology or concept |
-| **Report** | `/summarizer` agent | Sprint or feature complete, stakeholder update needed |
+| **Report** | `/html-summarizer` agent | Sprint or feature complete, stakeholder update needed |
 
 ### Why hybrid?
 
@@ -117,7 +117,7 @@ STATUS.md is a live project dashboard. Git sections (branch, commits, file chang
 4. **Risks & Blockers** — Add blockers; remove resolved ones
 5. **Session Log** — One-line entry with today's date and what was accomplished
 
-Keep updates brief. STATUS.md is a dashboard, not a report — use `/summarizer` for detailed retrospectives.
+Keep updates brief. STATUS.md is a dashboard, not a report — use `/html-summarizer` for detailed retrospectives.
 
 ## Conventions
 

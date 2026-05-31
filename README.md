@@ -32,7 +32,7 @@ npx agent-eng init --dry-run
 │       ├── reviewer.md                    # Automatic review and ticket tracking
 │       ├── code-auditor.md                # Optional structural quality audit
 │       ├── learner.md                     # Deep-dive learning for technologies used
-│       └── summarizer.md                  # Executive summaries for stakeholders
+│       └── html-summarizer.md              # Visual HTML slide decks for stakeholders
 ├── architecture/
 │   ├── overview.md                        # High-level architecture overview
 │   └── decisions/
@@ -77,7 +77,7 @@ Agents own the **process** — architecture decisions, work decomposition, quali
 | **Review** | `/reviewer` agent *(automatic)* | Approval or feedback, ticket/backlog updates |
 | **Audit** | `/code-auditor` agent *(optional)* | Severity-ranked structural findings |
 | **Learn** | `/learner` agent | Technology deep-dives with interview prep |
-| **Report** | `/summarizer` agent | Executive summaries |
+| **Report** | `/html-summarizer` agent | Visual HTML slide decks |
 
 ### When to use what
 
