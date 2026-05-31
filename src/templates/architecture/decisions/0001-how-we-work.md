@@ -25,7 +25,7 @@ We adopt a **hybrid approach**: specialized agents own the process, Claude Code 
 
 2. **Planner** — Takes specs and ADRs as input. Decomposes work into tickets scoped for plan mode sessions. Does not implement.
 
-3. **Reviewer** — Automatically invoked after each ticket. Reviews diffs against acceptance criteria and linked ADRs. Checks for convention violations and test adequacy. Updates ticket status and syncs the backlog. Does not fix issues directly — flags them for fixing via plan mode.
+3. **Ticket Verifier** — Automatically invoked after each ticket. Verifies diffs against acceptance criteria and linked ADRs. Checks for convention violations and test adequacy. Updates ticket status and syncs the backlog. Does not fix issues directly — flags them for fixing via plan mode.
 
 4. **Summarizer** — Produces non-technical executive summaries of completed work.
 
@@ -36,7 +36,7 @@ Each ticket from the Planner is executed using Claude Code's plan mode (`shift+t
 - Executes within a single session with full context continuity
 - Adapts its depth to the task — simple ticket, simple plan
 
-After plan mode completes a ticket, the Reviewer is invoked automatically to validate the work and update tracking.
+After plan mode completes a ticket, the Ticket Verifier is invoked automatically to validate the work and update tracking.
 
 ### When to skip the pipeline
 

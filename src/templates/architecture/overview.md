@@ -13,11 +13,11 @@ This document provides a high-level view of the system architecture.
 ## The Flow (Hybrid)
 
 ```
-Requirement → Architect → ADR/Spec → Planner → Tickets → Plan Mode → Code → Reviewer → Merged
+Requirement → Architect → ADR/Spec → Planner → Tickets → Plan Mode → Code → Ticket Verifier → Merged
                 (agent)                (agent)            (built-in)        (agent)
 ```
 
-**Process phases** (agents): Architect, System Architect, Planner, Reviewer, Summarizer
+**Process phases** (agents): Architect, System Architect, Planner, Ticket Verifier, Summarizer
 **Execution phase** (plan mode): Claude Code's built-in plan mode implements each ticket in a focused session
 
 ## When to Skip the Pipeline

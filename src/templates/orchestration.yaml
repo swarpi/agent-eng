@@ -54,9 +54,9 @@ agents:
     color: indigo
     builtin: true
 
-  - id: ticket-reviewer
+  - id: ticket-verifier
     kind: validation
-    title: Ticket Reviewer
+    title: Ticket Verifier
     tagline: Validates and closes tickets
     description: >
       Automatically invoked after plan mode completes a ticket. Validates code
@@ -68,7 +68,7 @@ agents:
       - Ticket updates
       - Backlog sync
     color: amber
-    docLink: /.claude/agents/ticket-reviewer.md
+    docLink: /.claude/agents/ticket-verifier.md
 
   - id: code-auditor
     kind: validation
@@ -114,22 +114,22 @@ connections:
     artifact: Tickets
     note: Each ticket becomes a separate plan mode session
 
-  # Validation phase (automatic — ticket-reviewer runs after every ticket)
+  # Validation phase (automatic — ticket-verifier runs after every ticket)
   - from: plan-mode
-    to: ticket-reviewer
+    to: ticket-verifier
     artifact: Code · Tests
     type: automatic
-    note: Ticket-reviewer is invoked automatically after plan mode completes a ticket
+    note: Ticket-verifier is invoked automatically after plan mode completes a ticket
 
   # Feedback loop
-  - from: ticket-reviewer
+  - from: ticket-verifier
     to: plan-mode
     artifact: Feedback
     type: feedback
     note: Fix issues in a new plan mode session
 
   # Reporting trigger
-  - from: ticket-reviewer
+  - from: ticket-verifier
     to: summarizer
     artifact: Completed work context
     type: trigger
