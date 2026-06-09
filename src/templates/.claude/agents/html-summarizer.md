@@ -26,6 +26,18 @@ Before writing any HTML, gather the full picture. Do not start generating slides
 7. **Tests** — Run the test suite (read-only, e.g. `npx vitest run --reporter=verbose 2>&1 | tail -5`) to get pass/fail counts
 8. **Tech stack** — Note which technologies, libraries, and services the feature touches
 
+## System design content
+
+When slides involve system design — architecture decisions, scaling trade-offs, data flow, back-of-envelope estimations, or component deep dives — spawn the `system-design` agent as a sub-agent. Tell it what content you need and in what format (HTML slide fragments, SVG diagrams, estimation tables). It follows Alex Xu's System Design Interview style and will return content you can embed directly into your slides.
+
+Use it for:
+- Architecture overview slides that need estimation tables or trade-off comparisons
+- Data flow slides that need clean box-and-arrow diagrams in Alex Xu's whiteboard style
+- Deep-dive slides that walk through a component step by step
+- Any slide where the user asks for "system design" level explanation
+
+The system-design agent handles the content and reasoning style. You handle the visual presentation and design system.
+
 ## Slide structure
 
 Plan 10–14 slides. Every feature is different, but this ordering works well:
@@ -66,146 +78,57 @@ Diagrams are inline SVG inside each slide. Follow these rules to avoid layout is
 - **Space nodes generously.** Minimum 20px gap between adjacent boxes. If three boxes sit in a row, calculate: `containerWidth / 3` for each box, then center each box within its column.
 - **Test text width.** A 10-character monospace string at font-size 10 is roughly 60px wide. Size your boxes to fit the longest label plus 20px padding on each side.
 - **Keep flowcharts vertically oriented** when they have more than 4 steps. Horizontal layouts compress poorly.
-- **Use consistent color coding across slides.** Define a role for each color and stick to it:
-  - One color for frontend components
-  - One color for backend/API
-  - One color for data/storage
-  - One color for success/output states
-  - One color for warnings/decisions
+- **Keep color minimal and consistent.** Ink strokes by default, the terracotta
+  accent for the path or node under discussion, status colors only as small
+  dots. Never large color fills.
 
 ### Code blocks
 
 - Use `<pre>` or `<div>` with monospace font — not `<code>` blocks (they don't preserve whitespace well in slides).
 - Apply syntax highlighting with `<span>` classes: `.kw` (keywords), `.type` (types), `.str` (strings), `.comment` (comments), `.prop` (properties), `.num` (numbers), `.op` (operators).
-- Highlight added/changed lines with a `.new` class (subtle left border + light background tint).
+- Highlight added/changed lines with a `.new` class (subtle accent background tint).
 - Cap code blocks at 12–15 lines. Show the relevant fragment, not the whole function.
 
-## Design system
+## Design system: Folio
 
-Use this exact design system. Do not deviate.
+Slides follow the **Folio** design system. The full spec — color tokens,
+typography, components, and the hand-drawn diagram technique — lives in
+`conventions/folio.md`. Read it before writing any HTML, and treat
+`summaries/_slide-template.html` as the visual reference for the title/overview
+slide. Do not deviate from the system.
 
-### Colors
+The short version:
 
-```
---bg: #f8f7f4            (warm off-white page background)
---surface: #ffffff        (card backgrounds)
---surface2: #f1f0ed       (secondary surfaces, table headers)
---border: #e4e2dc         (card borders)
---border-light: #eeedea   (subtle dividers)
---text: #1a1a1a           (primary text)
---text-secondary: #4a4a4a (body text, descriptions)
---muted: #7a7870          (captions, labels)
---accent: #4a56e2         (primary accent — links, highlights, frontend)
---accent-light: #eef0ff   (accent tint for backgrounds)
---accent2: #e24a7a        (secondary accent — backend, emphasis)
---accent2-light: #fef0f4  (secondary tint)
---green: #1a8a5c          (success, output, data stores)
---green-light: #edf8f2
---amber: #b8860b          (warnings, decisions, Firestore)
---amber-light: #fdf6e3
---cyan: #1a7a8a           (API layer, connections)
---cyan-light: #edf6f8
-```
+- White page, warm near-black ink (`#16130f`), one terracotta accent
+  (`#b0512f`). Status colors appear only as small dots/tags.
+- **Public Sans** for prose, **JetBrains Mono** for code/IDs/labels/numbers,
+  **Kalam** for hand-drawn diagram labels. All via Google Fonts.
+- **Sharp corners and hairline rules** (`#ece7df`). No rounded cards, no pills,
+  no shadows, no left-accent-border callouts. Separation is hairlines and
+  whitespace.
+- Section labels: mono, uppercase, `.1em` letter-spacing, muted.
+- Meta strips: cells divided by hairlines, mono uppercase label over a value.
+- Code blocks are **dark terminals**: `#1a1814` background, ~7px radius (the
+  only rounded corners), header bar with filename + language in mono. Syntax
+  tints: keyword `#e6a06a`, string `#a9c08a`, comment `#7c7363`, fn `#e0855f`.
+  Highlight added lines with a subtle accent tint, not a border.
 
-### Typography
+### Diagrams
 
-- **Font:** Inter (Google Fonts) for body, JetBrains Mono for code
-- **H1:** 50–58px, weight 700, letter-spacing -1.5px
-- **H2:** 34px, weight 700, letter-spacing -0.8px
-- **H3:** 16px, weight 600
-- **Body:** 16px, line-height 1.7, color `--text-secondary`
-- **Code:** 12–13px, line-height 1.75
-- **Section labels:** 11px, weight 700, uppercase, letter-spacing 1.5px, color `--accent`
-
-### Cards
-
-- Background: `--surface`, border: 1px solid `--border-light`, border-radius: 14px, padding: 24px
-- Shadow: `0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.03)`
-- Use `border-left: 3px solid <color>` to visually group cards by category
-
-### Tags / badges
-
-- Pill shape: border-radius 20px, padding 3px 10px, font-size 11px, weight 600, uppercase
-- Each tag type gets a light background + darker text from the same hue
+Diagrams use Folio's hand-drawn SVG technique (feTurbulence/feDisplacementMap
+on strokes, crisp Kalam labels, open-V arrowheads) — the exact filter and rules
+are in `conventions/folio.md`, and `architecture/_sketch-template.html` is a
+working example. Keep them simple: 5–8 boxes, label every arrow, layered lanes
+(Client / Edge / Backend / Data) only when they aid reading. Encode state with
+a node's stroke color + a small status dot.
 
 ### Slide layout
 
 - Slide padding: 56px 72px
 - Use CSS grid (`.grid-2`, `.grid-3`) and flexbox (`.split`) for layouts
-- Progress bar: 3px gradient at top of page
-- Slide number: bottom-right corner
+- Progress bar: 2px `--accent` line at top of page
+- Slide number: bottom-right corner, mono
 - Navigation: arrow keys, click (left half = back, right half = forward), touch swipe
-
-## Code block styling
-
-```css
-.code {
-  font-family: 'JetBrains Mono', monospace;
-  background: #fafaf8;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 18px 22px;
-  font-size: 13px;
-  line-height: 1.75;
-  white-space: pre;
-  overflow-x: auto;
-  color: var(--text);
-}
-.code .kw { color: #8839ef; }
-.code .type { color: #1e66f5; }
-.code .str { color: #40a02b; }
-.code .comment { color: #9ca0b0; }
-.code .prop { color: #d20f39; }
-.code .num { color: #fe640b; }
-.code .op { color: #04a5e5; }
-.code .new {
-  background: rgba(26, 138, 92, 0.08);
-  padding: 1px 6px;
-  border-radius: 4px;
-  border-left: 2px solid var(--green);
-}
-```
-
-## SVG diagram patterns
-
-### Node boxes
-```svg
-<rect x="50" y="50" width="180" height="75" rx="10"
-  fill="#eef0ff" stroke="#4a56e2" stroke-width="1.5"/>
-<text x="140" y="78" fill="#4a56e2" font-size="13"
-  font-weight="700" text-anchor="middle">Component Name</text>
-<text x="140" y="96" fill="#7a7870" font-size="10"
-  text-anchor="middle" class="mono">function or file</text>
-```
-
-### Arrow markers
-```svg
-<defs>
-  <marker id="arrowAccent" markerWidth="8" markerHeight="6"
-    refX="8" refY="3" orient="auto">
-    <path d="M0,0 L8,3 L0,6" fill="#4a56e2"/>
-  </marker>
-</defs>
-```
-
-### Decision diamonds
-```svg
-<polygon points="200,60 290,95 200,130 110,95"
-  fill="#fdf6e3" stroke="#b8860b" stroke-width="1.5"/>
-<text x="200" y="99" fill="#b8860b" font-size="11"
-  font-weight="600" text-anchor="middle">condition?</text>
-```
-
-### Tier backgrounds
-```svg
-<!-- Use a rounded rect with a tinted fill to group related nodes -->
-<rect x="20" y="20" width="860" height="170" rx="14"
-  fill="#fafaff" stroke="#d3d7f8" stroke-width="1.5"/>
-<text x="44" y="46" fill="#4a56e2" font-size="11"
-  font-weight="700" letter-spacing="1.5" opacity="0.7">
-  TIER LABEL
-</text>
-```
 
 ## Slide navigation JavaScript
 

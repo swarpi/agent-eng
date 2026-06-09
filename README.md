@@ -29,12 +29,14 @@ npx agent-eng init --dry-run
 │       ├── architect.md                   # Design decisions and ADRs
 │       ├── system-architect.md            # Runtime architecture mapping
 │       ├── planner.md                     # Work decomposition into tickets
-│       ├── reviewer.md                    # Automatic review and ticket tracking
+│       ├── ticket-verifier.md             # Automatic review and ticket tracking
 │       ├── code-auditor.md                # Optional structural quality audit
 │       ├── learner.md                     # Deep-dive learning for technologies used
-│       └── html-summarizer.md              # Visual HTML slide decks for stakeholders
+│       ├── system-design.md               # Alex Xu-style system design subskill
+│       └── html-summarizer.md             # Visual HTML slide decks for stakeholders
 ├── architecture/
 │   ├── overview.md                        # High-level architecture overview
+│   ├── _sketch-template.html              # Hand-drawn component map (Folio)
 │   └── decisions/
 │       ├── _template.md                   # ADR template
 │       └── 0001-how-we-work.md            # Seed ADR explaining the workflow
@@ -45,7 +47,14 @@ npx agent-eng init --dry-run
 │   ├── _backlog.md                        # Sprint board
 │   └── example/
 │       └── 001-example-ticket.md          # Example ticket
+├── learnings/
+│   ├── _deck-template.html                # Explainer slide deck (Folio)
+│   ├── _longform-template.html            # Same explainer as a scrolling page
+│   └── deck-stage.js                      # Zero-dependency deck web component
+├── summaries/
+│   └── _slide-template.html               # Work-summary slide reference (Folio)
 └── conventions/
+    ├── folio.md                           # Folio design system for HTML artifacts
     ├── typescript.md                      # TypeScript coding standards
     ├── python.md                          # Python coding standards
     └── java.md                            # Java coding standards
@@ -74,10 +83,13 @@ Agents own the **process** — architecture decisions, work decomposition, quali
 | **Map** | `/system-architect` agent | `architecture.yaml` |
 | **Decompose** | `/planner` agent | Tickets with acceptance criteria |
 | **Execute** | Plan mode (`shift+tab`) | Code and tests |
-| **Review** | `/reviewer` agent *(automatic)* | Approval or feedback, ticket/backlog updates |
+| **Verify** | `/ticket-verifier` agent *(automatic)* | Approval or feedback, ticket/backlog updates |
 | **Audit** | `/code-auditor` agent *(optional)* | Severity-ranked structural findings |
-| **Learn** | `/learner` agent | Technology deep-dives with interview prep |
+| **Learn** | `/learner` agent | Technology deep-dives with interview prep, explainer decks |
+| **Design** | `/system-design` agent *(subskill)* | Alex Xu-style diagrams, estimations, trade-offs |
 | **Report** | `/html-summarizer` agent | Visual HTML slide decks |
+
+All HTML artifacts — learning decks, work summaries, architecture sketches — share one design system, **Folio**: an editorial, print-influenced look with hand-drawn SVG diagrams, defined in `conventions/folio.md`. Every artifact is a single self-contained file that opens directly in a browser.
 
 ### When to use what
 
@@ -85,7 +97,7 @@ Agents own the **process** — architecture decisions, work decomposition, quali
 - **Well-scoped ticket** — Plan mode directly
 - **Bug fix or small change** — Just implement, no ceremony needed
 
-The reviewer runs automatically after each ticket to validate acceptance criteria, update ticket status, and sync the backlog.
+The ticket verifier runs automatically after each ticket to validate acceptance criteria, update ticket status, and sync the backlog.
 
 ## YAML Definitions
 
@@ -101,7 +113,7 @@ The reviewer runs automatically after each ticket to validate acceptance criteri
 4. **Map the system** — Use `/system-architect` to document your runtime architecture
 5. **Plan the work** — Use `/planner` to decompose your ADR into tickets
 6. **Execute** — Use plan mode (`shift+tab`) to implement each ticket
-7. **Review happens automatically** — The reviewer validates and updates tracking after each ticket
+7. **Verification happens automatically** — The ticket verifier validates and updates tracking after each ticket
 
 ## License
 

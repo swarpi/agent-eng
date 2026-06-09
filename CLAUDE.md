@@ -10,9 +10,13 @@ Running `npx agent-eng init` creates a directory structure with Claude Code suba
 - **Architect** — Analyzes requirements, asks clarifying questions, produces Architecture Decision Records (ADRs). Does not write code.
 - **System Architect** — Maps the runtime architecture as `architecture.yaml` (components, tiers, connections).
 - **Planner** — Reads ADRs and specs, decomposes work into tickets scoped for plan mode sessions. Does not implement.
-- **Reviewer** — Automatically invoked after each ticket. Validates code and tests against acceptance criteria. Updates ticket status and syncs the backlog. Flags issues but does not fix them.
+- **Ticket Verifier** — Automatically invoked after each ticket. Validates code and tests against acceptance criteria. Updates ticket status and syncs the backlog. Flags issues but does not fix them.
 - **Code Auditor** — Optional. Audits code for structural quality, over-abstraction, and AI code slop. Can be invoked manually or proactively suggested after large diffs.
+- **Learner** — Deep-dives a technology used in the project: grounds the explanation in the actual code, produces an interview-ready answer, and can render a Folio explainer slide deck.
 - **HTML Summarizer** — Generates self-contained HTML slide decks with architecture diagrams, code walkthroughs, and decision records. Stakeholder-ready presentations that open directly in a browser.
+- **System Design** — Subskill for system design questions in Alex Xu's style. Any agent can spawn it for architecture diagrams, back-of-envelope estimations, trade-off tables, and scaling deep dives. Owns the Folio hand-drawn SVG diagram technique.
+
+**Design system**: all HTML artifacts (learning decks, summaries, architecture sketches) follow **Folio** — an editorial, print-influenced system with hand-drawn SVG diagrams, defined in `src/templates/conventions/folio.md`. The shipped HTML templates are final designs; agents copy them and replace content, they do not restyle them. Markdown artifacts (tickets, ADRs, specs) intentionally stay markdown — they are working files read by agents and rendered by GitHub/editors.
 
 **Execution** (built-in):
 - **Plan mode** (`shift+tab`) — Claude Code's native plan-then-execute cycle. Each ticket from the Planner is implemented as a separate plan mode session.
@@ -29,26 +33,42 @@ agent-eng/
 │   ├── init.js               # Core scaffolding logic — copies templates to target dir
 │   └── templates/            # All files that get copied on `agent-eng init`
 │       ├── .claude/
-│       │   ├── settings.json  # Claude Code project settings (MCP servers)
+│       │   ├── settings.json  # Claude Code project settings (hooks)
+│       │   ├── scripts/
+│       │   │   └── update-status.sh  # Auto-updates STATUS.md on commit/push
 │       │   └── agents/        # Auto-wired subagents (frontmatter + system prompt)
 │       │       ├── architect.md
 │       │       ├── system-architect.md
 │       │       ├── planner.md
-│       │       ├── reviewer.md
+│       │       ├── ticket-verifier.md
 │       │       ├── code-auditor.md
-│       │       └── html-summarizer.md
+│       │       ├── learner.md
+│       │       ├── html-summarizer.md
+│       │       └── system-design.md
 │       ├── CLAUDE.md          # Project instructions for AI agents
 │       ├── orchestration.yaml # Machine-readable workflow definition
+│       ├── architecture.yaml  # System architecture template
+│       ├── STATUS.md          # Live project dashboard
 │       ├── architecture/
 │       │   ├── overview.md    # High-level architecture overview
+│       │   ├── _sketch-template.html    # Folio hand-drawn component map
 │       │   └── decisions/
 │       │       ├── _template.md         # ADR template
 │       │       └── 0001-how-we-work.md  # Seed ADR explaining the workflow
 │       ├── specs/
 │       │   └── _template.md   # Feature specification template
 │       ├── tickets/
-│       │   └── _template.md   # Work ticket template
+│       │   ├── _template.md   # Work ticket template
+│       │   ├── _backlog.md    # Sprint board
+│       │   └── example/001-example-ticket.md
+│       ├── learnings/
+│       │   ├── _deck-template.html      # Folio explainer slide deck
+│       │   ├── _longform-template.html  # Same content as a scrolling page
+│       │   └── deck-stage.js            # Deck web component (vanilla, no deps)
+│       ├── summaries/
+│       │   └── _slide-template.html     # Folio work-summary slide reference
 │       └── conventions/
+│           ├── folio.md       # Folio design system (always copied)
 │           ├── typescript.md  # TypeScript coding standards
 │           ├── python.md      # Python coding standards
 │           └── java.md        # Java coding standards
@@ -59,9 +79,9 @@ agent-eng/
 1. `bin/agent-eng.js` is the npm bin entry point — it calls `run()` from `src/index.js`
 2. `src/index.js` parses args, shows help, and routes to the `init` command
 3. `src/init.js` does the actual work:
-   - Iterates over a hardcoded list of template files (`STRUCTURE` array)
+   - Iterates over a hardcoded list of template files (`FRAMEWORK_FILES` + `PROJECT_STATE_FILES`)
    - Copies each file from `src/templates/` to the target directory
-   - Convention files (typescript, python, java) are copied based on the `--conventions` flag
+   - Language convention files (typescript, python, java) are copied based on the `--conventions` flag; `conventions/folio.md` is always copied
    - Existing files are skipped unless `--force` is passed
    - Reports what was created and what was skipped
 
@@ -78,8 +98,8 @@ agent-eng init --force                      # Overwrite existing files
 ## Adding a New Template File
 
 1. Create the file in `src/templates/` at the desired path
-2. Add the relative path to the `STRUCTURE` array in `src/init.js`
-3. If it's a convention file, it's handled separately via the `--conventions` flag loop
+2. Add the relative path to `FRAMEWORK_FILES` (workflow files, replaceable on upgrade) or `PROJECT_STATE_FILES` (user content, protected) in `src/init.js`
+3. If it's a language convention file, it's handled separately via the `--conventions` flag loop
 
 ## Adding a New Convention
 
@@ -95,7 +115,7 @@ agent-eng init --force                      # Overwrite existing files
 ## Key Design Decisions
 
 - **Zero dependencies**: Uses only Node.js built-ins (`fs`, `path`, `url`). No prompting library, no template engine.
-- **File copy, not generation**: Templates are static markdown files copied as-is. No variable interpolation or templating.
+- **File copy, not generation**: Templates are static files (markdown, self-contained HTML, vanilla JS) copied as-is. No variable interpolation or templating.
 - **Safe by default**: Existing files are never overwritten unless `--force` is explicitly passed.
 - **Convention files are opt-in**: The `--conventions` flag controls which language convention files are included. Defaults to all.
 - **ESM**: The package uses ES modules (`"type": "module"` in package.json).

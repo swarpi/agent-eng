@@ -16,7 +16,14 @@ const FRAMEWORK_FILES = [
   ".claude/agents/ticket-verifier.md",
   ".claude/agents/html-summarizer.md",
   ".claude/agents/system-architect.md",
+  ".claude/agents/system-design.md",
   "orchestration.yaml",
+  "conventions/folio.md",
+  "learnings/_deck-template.html",
+  "learnings/_longform-template.html",
+  "learnings/deck-stage.js",
+  "summaries/_slide-template.html",
+  "architecture/_sketch-template.html",
 ];
 
 const PROJECT_STATE_FILES = [

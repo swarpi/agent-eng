@@ -15,6 +15,7 @@ Agents own the **process** — architecture decisions, work decomposition, quali
 | **Verify** | `/ticket-verifier` agent *(automatic)* | Runs after every ticket — validates, updates status, syncs backlog |
 | **Audit** | `/code-auditor` agent *(optional)* | After large diffs, before commits, or on request — structural quality check |
 | **Learn** | `/learner` agent | Feature complete and introduced a new technology or concept |
+| **Design** | `/system-design` agent *(subskill)* | System design question, scaling analysis, or when any agent needs Alex Xu-style content |
 | **Report** | `/html-summarizer` agent | Sprint or feature complete, stakeholder update needed |
 
 ### Why hybrid?
@@ -95,6 +96,9 @@ When work can be parallelized, spin up sub-agents for independent tasks concurre
 - `specs/` — Feature specifications
 - `tickets/` — Work items organized by feature folder, with `_backlog.md` as the sprint board
 - `conventions/` — Language and framework coding standards
+- `conventions/folio.md` — Folio design system: governs every HTML artifact
+- `learnings/` — Technology learnings and explainer decks (`_deck-template.html` + `deck-stage.js`)
+- `summaries/` — HTML work-summary decks (`_slide-template.html` is the style reference)
 - `.claude/agents/` — Subagent definitions for each role
 - `STATUS.md` — Live project dashboard (auto-updated git data + manually maintained context)
 
@@ -118,6 +122,12 @@ STATUS.md is a live project dashboard. Git sections (branch, commits, file chang
 5. **Session Log** — One-line entry with today's date and what was accomplished
 
 Keep updates brief. STATUS.md is a dashboard, not a report — use `/html-summarizer` for detailed retrospectives.
+
+## Writing Style for Artifacts
+
+All written artifacts — ADRs, tickets, learnings, summaries — follow the voice of Alex Xu's *System Design Interview* books: frame the problem and requirements first, survey the options, deep-dive the chosen approach, compare trade-offs, wrap up with a recommendation. Calm, declarative, teaching tone. Concrete numbers over adjectives. No hype, no emoji.
+
+HTML artifacts (learning decks, work summaries, architecture sketches) additionally follow the **Folio** design system — read `conventions/folio.md` before producing any HTML.
 
 ## Conventions
 

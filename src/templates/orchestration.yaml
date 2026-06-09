@@ -24,7 +24,7 @@ agents:
     outputs:
       - architecture.yaml
       - Component map
-      - Connection diagram
+      - Hand-drawn system sketch
     color: green
     docLink: /.claude/agents/system-architect.md
 
@@ -86,6 +86,39 @@ agents:
     optional: true
     docLink: /.claude/agents/code-auditor.md
 
+  - id: system-design
+    kind: subskill
+    title: System Design
+    tagline: Alex Xu-style system design explanations
+    description: >
+      Reusable subskill for system design content. Any agent can spawn it for
+      architecture diagrams, back-of-envelope estimations, trade-off tables,
+      and scaling deep dives. Follows Alex Xu's System Design Interview style.
+    outputs:
+      - Estimation tables
+      - Trade-off analyses
+      - Architecture diagrams
+      - Design deep dives
+    color: purple
+    optional: true
+    docLink: /.claude/agents/system-design.md
+
+  - id: learner
+    kind: learning
+    title: Learner
+    tagline: Deep-dives technologies used in the project
+    description: >
+      Finds where a technology or concept actually lives in the code, explains
+      it, produces an interview-ready answer, and quizzes the user. Can render
+      the learning as a Folio explainer deck — a self-contained HTML slide
+      presentation.
+    outputs:
+      - Learning notes
+      - Explainer decks
+    color: teal
+    optional: true
+    docLink: /.claude/agents/learner.md
+
   - id: html-summarizer
     kind: reporting
     title: HTML Summarizer
@@ -127,6 +160,23 @@ connections:
     artifact: Feedback
     type: feedback
     note: Fix issues in a new plan mode session
+
+  # Subskill — system-design can be spawned by any agent
+  - from: html-summarizer
+    to: system-design
+    artifact: System design content request
+    type: subskill
+    note: Spawned for architecture diagrams, estimations, and trade-offs in Alex Xu style
+
+  - from: architect
+    to: system-design
+    artifact: Scaling analysis request
+    type: subskill
+
+  - from: learner
+    to: system-design
+    artifact: System design explanation request
+    type: subskill
 
   # Reporting trigger
   - from: ticket-verifier
