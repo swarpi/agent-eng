@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.18.0] - 2026-06-10
+
+### Added
+- **Folio design system** for all HTML artifacts — editorial, print-influenced look with hand-drawn SVG diagrams. Spec ships as `conventions/folio.md` (always copied, independent of `--conventions`)
+- Learner explainer decks: `learnings/_deck-template.html` slide deck built on `deck-stage.js` (zero-dependency web component with scaling, keyboard nav, thumbnail rail), plus `learnings/_longform-template.html` as a scrolling-page alternative
+- `summaries/_slide-template.html` — Folio work-summary slide, the style reference for html-summarizer decks
+- `architecture/_sketch-template.html` — layered hand-drawn component map; system-architect can render `architecture/sketch.html` as a view of `architecture.yaml`
+- System-design subskill agent (Alex Xu style) — any agent can spawn it for diagrams, estimations, and trade-off tables; owns the Folio hand-drawn SVG technique
+- Writing-style section in scaffolded CLAUDE.md (Alex Xu *System Design Interview* voice for all artifacts)
+- Learner agent entry in `orchestration.yaml` (was referenced in connections but never defined)
+
+### Changed
+- HTML Summarizer restyled to Folio — replaces the previous indigo/pill/rounded-card design system with sharp corners, hairline rules, dark code terminals, and one terracotta accent
+- Tickets, ADRs, specs, and STATUS deliberately remain markdown — they are agent working files; Folio applies to presentation artifacts only
+- README and repo docs updated to the current agent roster (ticket-verifier, learner, system-design) and file tree
+
 ## [0.15.1] - 2026-05-30
 
 ### Fixed
